@@ -5,6 +5,9 @@ LinearProbing::LinearProbing(int hashFunction) {
 	TABLE_SIZE = 1019;
 	hashFunc = hashFunction;
 	hashTable = new int* [TABLE_SIZE];
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		hashTable[i] = NULL;
+	}
 }
 
 LinearProbing::~LinearProbing() {
