@@ -76,19 +76,29 @@ int main() {
 	case 3:
 		// prompt user to choose hash function to implement
 		hashMenu();
-		cin >> hashChoice;
+		while (true) {
+			cin >> hashChoice;
+			if (hashChoice == 1) {
+				LinearProbing hashTable = LinearProbing(1);
 
-		if (hashChoice == 1) {
-			LinearProbing hashTable = LinearProbing(1);
-		}
-		else {
-			LinearProbing hashTable = LinearProbing(1);
+				break;
+			}
+			else if (hashChoice == 2) {
+				LinearProbing hashTable = LinearProbing(2);
+
+				break;
+			}
+			else {
+				cout << "Invalid hash choice." << endl;
+				hashMenu();
+			}
 		}
 		break;
 
 		// cuckoo hashing
 	case 4:
 		// uses both hash functions by definition
+		CuckooHashing hashTable;
 
 		break;
 
