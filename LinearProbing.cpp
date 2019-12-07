@@ -1,5 +1,6 @@
 #include "LinearProbing.h"
 #include <iostream>
+#include "math.h"
 
 LinearProbing::LinearProbing(int hashFunction) {
 	TABLE_SIZE = 1019;
