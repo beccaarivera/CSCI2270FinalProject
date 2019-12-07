@@ -1,5 +1,6 @@
 #include "LinearProbing.h"
 #include <iostream>
+#include "math.h"
 using namespace std;
 
 LinearProbing::LinearProbing(int hashFunction) {
