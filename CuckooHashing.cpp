@@ -2,7 +2,7 @@
 #include <iostream>
 
 CuckooHashing::CuckooHashing() {
-	TABLE_SIZE = 1019;
+	TABLE_SIZE = 10009;
 	rehashCounter = 0;
 	hashTable1 = new int* [TABLE_SIZE];
 	hashTable2 = new int* [TABLE_SIZE];
@@ -17,10 +17,12 @@ CuckooHashing::~CuckooHashing() {
 	delete hashTable2;
 }
 
-void CuckooHashing::insert(int toInsert) {
-	if (insertHelper(toInsert)) {
-		rehash();
-	}
+int CuckooHashing::hashFunc1(int toHash) {
+	return toHash % TABLE_SIZE;
+}
+
+int CuckooHashing::hashFunc2(int toHash) {
+	return floor(toHash / TABLE_SIZE);
 }
 
 //insertHelper is here so that rehashing won't call itself if the new table size doesn't work
@@ -50,6 +52,13 @@ bool CuckooHashing::insertHelper(int toInsert) {
 		return true;
 	}
 	return false;
+}
+
+
+void CuckooHashing::insert(int toInsert) {
+	if (insertHelper(toInsert)) {
+		rehash();
+	}
 }
 
 void CuckooHashing::deleteValue(int toDelete) {
@@ -83,13 +92,6 @@ void CuckooHashing::lookup(int toLookup) {
 	}
 }
 
-int CuckooHashing::hashFunc1(int toHash) {
-	return toHash % TABLE_SIZE;
-}
-
-int CuckooHashing::hashFunc2(int toHash) {
-	return floor(toHash / TABLE_SIZE);
-}
 
 void CuckooHashing::rehash() {
 	int** hashTable1Old = hashTable1;

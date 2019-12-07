@@ -1,8 +1,9 @@
 #include "LinearProbing.h"
 #include <iostream>
+using namespace std;
 
 LinearProbing::LinearProbing(int hashFunction) {
-	TABLE_SIZE = 1019;
+	TABLE_SIZE = 10009;
 	hashFunc = hashFunction;
 	hashTable = new int* [TABLE_SIZE];
 	for (int i = 0; i < TABLE_SIZE; i++) {
@@ -15,6 +16,7 @@ LinearProbing::~LinearProbing() {
 }
 
 void LinearProbing::insert(int toInsert) {
+	cout << "Adding " << toInsert << endl;
 	int key = -1;
 	if (hashFunc == 1) {
 		key = hashFunc1(toInsert);
@@ -26,10 +28,12 @@ void LinearProbing::insert(int toInsert) {
 	while (hashTable[key] != NULL) {
 		key = (key + 1) % TABLE_SIZE;
 		if (key == originalKey) {
-			std::cout << "Error inserting value: hash table full." << std::endl;
+			cout << "Error inserting value: hash table full." << endl;
+			return;
 		}
 	}
 	hashTable[key] = &toInsert;
+	cout << "Added at " << key << "." << endl;
 
 }
 
@@ -66,7 +70,7 @@ void LinearProbing::deleteValue(int toDelete) {
 		}
 	}
 
-	std::cout << "Error deleting value: value not in table" << std::endl;
+	cout << "Error deleting value: value not in table" << endl;
 
 }
 
@@ -81,7 +85,7 @@ void LinearProbing::lookup(int toLookup) {
 	}
 
 	if (*hashTable[key] == toLookup) {
-		std::cout << "Value " << toLookup << " found at key " << key << std::endl;
+		cout << "Value " << toLookup << " found at key " << key << endl;
 		return;
 	}
 
@@ -99,12 +103,12 @@ void LinearProbing::lookup(int toLookup) {
 
 		//print and return if found
 		if (*hashTable[key] == toLookup) {
-			std::cout << "Value " << toLookup << " found at key " << key << std::endl;
+			cout << "Value " << toLookup << " found at key " << key << endl;
 			return;
 		}
 	}
 
-	std::cout << "Error looking up value: value not in table" << std::endl;
+	cout << "Error looking up value: value not in table" << endl;
 }
 
 int LinearProbing::hashFunc1(int toHash) {

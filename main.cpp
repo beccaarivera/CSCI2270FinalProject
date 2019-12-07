@@ -4,6 +4,7 @@
 #include <sstream>
 #include "CuckooHashing.h"
 #include "LinearProbing.h"
+#include <chrono>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ void mainMenu() {
 	cout << "2. Chaining with BST" << endl;
 	cout << "3. Linear Probing" << endl;
 	cout << "4. Cuckoo Hashing" << endl;
-	//cout << "5. Quit" << endl;
+	cout << "5. Quit" << endl;
 }
 
 void hashMenu() {
@@ -26,6 +27,9 @@ int main() {
 	// prompt user to chosse which collision resolution method to use
 	int mainChoice;
 	int hashChoice;
+	string filename = "dataSetA.csv";
+	fstream csvfile;
+	csvfile.open(filename);
 
 
 	//int quit = 0;
@@ -78,8 +82,12 @@ int main() {
 			while (true) {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
+					cout << "choice 1 " << endl;
 					LinearProbing hashTable = LinearProbing(1);
-
+					string toAdd;
+					while (getline(csvfile, toAdd,',')) {
+						hashTable.insert(stoi(toAdd));
+					}
 					break;
 				}
 				else if (hashChoice == 2) {
