@@ -68,7 +68,6 @@ int main() {
 			cout << "in hash 2" << endl;
 			break;
 		}
-		break;
 
 		// linear probing
 	}
@@ -99,9 +98,10 @@ int main() {
 		CuckooHashing hashTable;
 	}
 	else if (mainChoice == 5) {
-		break;
+		cout << "Quitting..." << endl;
+		return 0;
 	}
-	}else{
+	else{
 		cout << "Please enter a number 1-5" << endl;
 	}
 	//}
