@@ -15,6 +15,16 @@ CuckooHashing::CuckooHashing() {
 }
 
 CuckooHashing::~CuckooHashing() {
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (hashTable1[i] != NULL) {
+			delete hashTable1[i];
+			hashTable1[i] = NULL;
+		}
+		if (hashTable2[i] != NULL) {
+			delete hashTable2[i];
+			hashTable2[i] = NULL;
+		}
+	}
 	delete hashTable1;
 	delete hashTable2;
 }
@@ -34,19 +44,23 @@ bool CuckooHashing::insertHelper(int toInsert) {
 	int address2 = hashFunc2(toInsert);
 	if (hashTable1[address1] == NULL) {
 		//we can put the value into the first hash table without collision
-		hashTable1[address1] = &toInsert;
+		hashTable1[address1] = new int(toInsert);
+		cout << toInsert << " inserted at " << address1 << " in table 1" << endl;
 	}
 	else if (hashTable2[address2] == NULL) {
 		//we can put the value into the second hash table without collision
-		hashTable2[address2] = &toInsert;
+		hashTable2[address2] = new int(toInsert);
+		cout << toInsert << " inserted at " << address2 << " in table 2" << endl;
 	}
 	else if (swap(address1, address1, 1)) {
 		//we can move the number at the first address without rehashing
-		hashTable1[address1] = &toInsert;
+		hashTable1[address1] = new int(toInsert);
+		cout << toInsert << " inserted at " << address1 << " in table 1 after swapping the previous occupant" << endl;
 	}
 	else if (swap(address2, address2, 2)) {
 		//we can move the number at the second address without rehashing
-		hashTable2[address2] = &toInsert;
+		hashTable2[address2] = new int(toInsert);
+		cout << toInsert << " inserted at " << address2 << " in table 2 after swapping the previous occupant" << endl;
 	}
 	else {
 		//rehash :(
@@ -56,10 +70,11 @@ bool CuckooHashing::insertHelper(int toInsert) {
 	return false;
 }
 
-
 void CuckooHashing::insert(int toInsert) {
+
 	if (insertHelper(toInsert)) {
-		rehash();
+		cout << "Rehashing..." << endl;
+		//rehash();
 	}
 }
 
@@ -68,9 +83,11 @@ void CuckooHashing::deleteValue(int toDelete) {
 	int address1 = hashFunc1(toDelete);
 	int address2 = hashFunc2(toDelete);
 	if (*hashTable1[address1] == toDelete) {
+		delete hashTable1[address1];
 		hashTable1[address1] = NULL;
 	}
 	else if (*hashTable2[address2] == toDelete) {
+		delete hashTable2[address2];
 		hashTable2[address2] = NULL;
 	}
 	else {
@@ -93,7 +110,6 @@ void CuckooHashing::lookup(int toLookup) {
 		std::cout << "Error looking up value " << toLookup << ": value not found." << std::endl;
 	}
 }
-
 
 void CuckooHashing::rehash() {
 	int** hashTable1Old = hashTable1;
@@ -136,6 +152,7 @@ void CuckooHashing::rehash() {
 //recursively swaps toSwapKey to its alternate slot, and if that one is full to its alternate, etc.
 //originalKey will remain the same throughout the recursive callstack because we use it to identify infinite loops
 bool CuckooHashing::swap(int originalKey, int toSwapKey, int tableNum) {
+	cout << "Swapping with original key " << originalKey << ", to swap key " << toSwapKey << ", and table num " << tableNum << endl;
 	if (tableNum == 1) {
 		int toSwapToKey = hashFunc2(*hashTable1[toSwapKey]);
 		if (hashTable2[toSwapToKey] == NULL) {
@@ -150,7 +167,7 @@ bool CuckooHashing::swap(int originalKey, int toSwapKey, int tableNum) {
 		else {
 			//recurse
 			if (swap(originalKey, toSwapToKey, 2)) {
-				hashTable2[toSwapToKey] = &*hashTable1[toSwapKey];
+				hashTable2[toSwapToKey] = hashTable1[toSwapKey];
 			}
 			else {
 				return false;
@@ -161,7 +178,7 @@ bool CuckooHashing::swap(int originalKey, int toSwapKey, int tableNum) {
 		int toSwapToKey = hashFunc1(*hashTable2[toSwapKey]);
 		if (hashTable1[toSwapToKey] == NULL) {
 			//swap
-			hashTable1[toSwapToKey] = &*hashTable2[toSwapKey];
+			hashTable1[toSwapToKey] = hashTable2[toSwapKey];
 			return true;
 		}
 		else if (toSwapToKey == originalKey) {
@@ -171,7 +188,7 @@ bool CuckooHashing::swap(int originalKey, int toSwapKey, int tableNum) {
 		else {
 			//recurse
 			if (swap(originalKey, toSwapToKey, 1)) {
-				hashTable1[toSwapToKey] = &*hashTable2[toSwapKey];
+				hashTable1[toSwapToKey] = hashTable2[toSwapKey];
 			}
 			else {
 				return false;

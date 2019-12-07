@@ -13,6 +13,12 @@ LinearProbing::LinearProbing(int hashFunction) {
 }
 
 LinearProbing::~LinearProbing() {
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (hashTable[i] != NULL) {
+			delete hashTable[i];
+			hashTable[i] = NULL;
+		}
+	}
 	delete hashTable;
 }
 
@@ -33,7 +39,7 @@ void LinearProbing::insert(int toInsert) {
 			return;
 		}
 	}
-	hashTable[key] = &toInsert;
+	hashTable[key] = new int(toInsert);
 	cout << "Added at " << key << "." << endl;
 
 }
@@ -49,6 +55,7 @@ void LinearProbing::deleteValue(int toDelete) {
 	}
 
 	if (hashTable[key] != NULL && *hashTable[key] == toDelete) {
+		delete hashTable[key];
 		hashTable[key] = NULL;
 		cout << "Deleted from " << key << "." << endl;
 		return;
@@ -61,6 +68,7 @@ void LinearProbing::deleteValue(int toDelete) {
 	while (key != originalKey) {
 		//print and return if found
 		if (hashTable[key] != NULL && *hashTable[key] == toDelete) {
+			delete hashTable[key];
 			hashTable[key] = NULL;
 			cout << "Value " << toDelete << " deleted from key " << key << endl;
 			return;
