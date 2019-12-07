@@ -32,9 +32,7 @@ int main() {
 
 	//int quit = 0;
 	//while(quit == 0){
-	switch (mainChoice) {
-		// chaining with LL
-	case 1:
+	if (mainChoice == 1) {
 		// prompt user to choose hash function to implement
 		hashMenu();
 		cin >> hashChoice;
@@ -50,10 +48,10 @@ int main() {
 			cout << "in hash 2" << endl;
 			break;
 		}
-		break;
 
 		// chaining with BST
-	case 2:
+	}
+	else if (mainChoice == 2) {
 		// prompt user to choose hash function to implement
 		hashMenu();
 
@@ -73,7 +71,8 @@ int main() {
 		break;
 
 		// linear probing
-	case 3:
+	}
+	else if (mainChoice == 3) {
 		// prompt user to choose hash function to implement
 		hashMenu();
 		while (true) {
@@ -93,21 +92,16 @@ int main() {
 				hashMenu();
 			}
 		}
-		break;
-
 		// cuckoo hashing
-	case 4:
+	}
+	else if (mainChoice == 4) {
 		// uses both hash functions by definition
 		CuckooHashing hashTable;
-
+	}
+	else if (mainChoice == 5) {
 		break;
-
-		// quit
-		/*case 5:
-		  quit++;
-		break;*/
-
-	default:
+	}
+	}else{
 		cout << "Please enter a number 1-5" << endl;
 	}
 	//}
