@@ -5,6 +5,7 @@
 #include "CuckooHashing.h"
 #include "LinearProbing.h"
 #include <chrono>
+#include "LL.hpp"
 
 using namespace std;
 
@@ -31,6 +32,8 @@ int main() {
 	fstream csvfile;
 	csvfile.open(filename);
 
+  hashLL ll;
+
 
 	//int quit = 0;
 	//while(quit == 0){
@@ -45,12 +48,16 @@ int main() {
 			switch (hashChoice) {
 				// x mod TABLE_SIZE
 			case 1:
-				cout << "in hash 1" << endl; // delete couts later
-				break;
+				if (ll.isEmpty(0))
+          cout << "is empty, worked!" << endl;
+        else
+          cout << "somethin's wrong" << endl;
+
+			break;
 
 				// Floor(x/TABLE_SIZE) mod TABLE_SIZE
 			case 2:
-				cout << "in hash 2" << endl;
+
 				break;
 			}
 
@@ -115,4 +122,3 @@ int main() {
 		}
 	}
 }
-
