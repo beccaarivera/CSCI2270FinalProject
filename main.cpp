@@ -4,6 +4,7 @@
 #include <sstream>
 #include "CuckooHashing.h"
 #include "LinearProbing.h"
+#include <chrono>
 #include "LL.hpp"
 
 using namespace std;
@@ -27,6 +28,9 @@ int main() {
 	// prompt user to chosse which collision resolution method to use
 	int mainChoice;
 	int hashChoice;
+	string filename = "dataSetA.csv";
+	fstream csvfile;
+	csvfile.open(filename);
 
   hashLL ll;
 
@@ -85,8 +89,12 @@ int main() {
 			while (true) {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
+					cout << "choice 1 " << endl;
 					LinearProbing hashTable = LinearProbing(1);
-
+					string toAdd;
+					while (getline(csvfile, toAdd,',')) {
+						hashTable.insert(stoi(toAdd));
+					}
 					break;
 				}
 				else if (hashChoice == 2) {
