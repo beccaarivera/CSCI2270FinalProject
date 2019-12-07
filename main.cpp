@@ -89,12 +89,8 @@ int main() {
 			while (true) {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
-					cout << "choice 1 " << endl;
 					LinearProbing hashTable = LinearProbing(1);
-					string toAdd;
-					while (getline(csvfile, toAdd,',')) {
-						hashTable.insert(stoi(toAdd));
-					}
+
 					break;
 				}
 				else if (hashChoice == 2) {

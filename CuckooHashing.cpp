@@ -1,5 +1,6 @@
 #include "CuckooHashing.h"
 #include <iostream>
+using namespace std;
 
 CuckooHashing::CuckooHashing() {
 	TABLE_SIZE = 10009;
