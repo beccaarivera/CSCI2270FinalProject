@@ -93,13 +93,12 @@ int main() {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
 					LinearProbing hashTable = LinearProbing(1);
-
-
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv");
 					break;
 				}
 				else if (hashChoice == 2) {
 					LinearProbing hashTable = LinearProbing(2);
-
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv");
 					break;
 				}
 				else {
@@ -128,13 +127,23 @@ void testLinearProbing(LinearProbing hashTable, int tablesize, string filename) 
 	int num;
 	string tmpNum;
 	ifstream file(filename);
+
+	//get load factor to 0.1
 	while (hashTable.loadFactor()<0.1) {
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
-		cout << num << endl;
+		hashTable.insert(num);
 	}
 
-
+	auto t1=std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		hashTable.insert(num);
+	}
+	auto t2 = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	cout << "Took " << duration << " microseconds to insert 100 numbers at load factor 0.1." << endl;
 }
 
 
