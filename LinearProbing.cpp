@@ -13,6 +13,12 @@ LinearProbing::LinearProbing(int hashFunction) {
 }
 
 LinearProbing::~LinearProbing() {
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (hashTable[i] != NULL) {
+			delete hashTable[i];
+			hashTable[i] = NULL;
+		}
+	}
 	delete hashTable;
 }
 
@@ -33,12 +39,13 @@ void LinearProbing::insert(int toInsert) {
 			return;
 		}
 	}
-	hashTable[key] = &toInsert;
+	hashTable[key] = new int(toInsert);
 	cout << "Added at " << key << "." << endl;
 
 }
 
 void LinearProbing::deleteValue(int toDelete) {
+	cout << "Deleting " << toDelete << endl;
 	int key = -1;
 	if (hashFunc == 1) {
 		key = hashFunc1(toDelete);
@@ -47,28 +54,27 @@ void LinearProbing::deleteValue(int toDelete) {
 		key = hashFunc2(toDelete);
 	}
 
-	if (*hashTable[key] == toDelete) {
+	if (hashTable[key] != NULL && *hashTable[key] == toDelete) {
+		delete hashTable[key];
 		hashTable[key] = NULL;
+		cout << "Deleted from " << key << "." << endl;
 		return;
 	}
 
 	int originalKey = key;
+	key = (key + 1 % TABLE_SIZE);
 
-	//if we reach an empty bin (or the original location is empty), the value will not be found
-	while (hashTable[key]!=NULL) {
-		//increment the key and take the modulus of it to avoid inefficiency by having to compute the modulus of it in other steps
-		key=(key+1)%TABLE_SIZE;
-
-		//if we reach the original location, the value will not be found
-		if (key==originalKey) {
-			break;
-		}
-
-		//delete entry and return if found
-		if (*hashTable[key] == toDelete) {
+	//if we reach the original location, the value will not be found
+	while (key != originalKey) {
+		//print and return if found
+		if (hashTable[key] != NULL && *hashTable[key] == toDelete) {
+			delete hashTable[key];
 			hashTable[key] = NULL;
+			cout << "Value " << toDelete << " deleted from key " << key << endl;
 			return;
 		}
+		//increment the key
+		key = (key + 1) % TABLE_SIZE;
 	}
 
 	cout << "Error deleting value: value not in table" << endl;
@@ -85,28 +91,23 @@ void LinearProbing::lookup(int toLookup) {
 		key = hashFunc2(toLookup);
 	}
 
-	if (*hashTable[key] == toLookup) {
+	if (hashTable[key] != NULL && *hashTable[key] == toLookup) {
 		cout << "Value " << toLookup << " found at key " << key << endl;
 		return;
 	}
 
 	int originalKey = key;
+	key = (key + 1 % TABLE_SIZE);
 
-	//if we reach an empty bin (or the original location is empty), the value will not be found
-	while (hashTable[key] != NULL) {
-		//increment the key and take the modulus of it to avoid inefficiency by having to compute the modulus of it in other steps
-		key = (key + 1) % TABLE_SIZE;
-
-		//if we reach the original location, the value will not be found
-		if (key == originalKey) {
-			break;
-		}
-
+	//if we reach the original location, the value will not be found
+	while (key!=originalKey) {
 		//print and return if found
-		if (*hashTable[key] == toLookup) {
+		if (hashTable[key]!=NULL && *hashTable[key] == toLookup) {
 			cout << "Value " << toLookup << " found at key " << key << endl;
 			return;
 		}
+		//increment the key
+		key = (key + 1) % TABLE_SIZE;
 	}
 
 	cout << "Error looking up value: value not in table" << endl;
@@ -117,5 +118,5 @@ int LinearProbing::hashFunc1(int toHash) {
 }
 
 int LinearProbing::hashFunc2(int toHash) {
-	return floor(toHash / TABLE_SIZE);
+	return ((int) floor(toHash / TABLE_SIZE)) % TABLE_SIZE;
 }

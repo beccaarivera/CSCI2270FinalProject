@@ -90,7 +90,6 @@ int main() {
 			while (true) {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
-					cout << "choice 1 " << endl;
 					LinearProbing hashTable = LinearProbing(1);
 					string toAdd;
 					//while (getline(csvfile, toAdd,',')) {
@@ -113,6 +112,30 @@ int main() {
 		else if (mainChoice == 4) {
 			// uses both hash functions by definition
 			CuckooHashing hashTable;
+
+			//fill up the table
+			for (int i = 0; i < 1019; i++) {
+				hashTable.insert(i);
+				hashTable.insert(i * 1019 + i);
+			}
+
+			//cause rehash
+			hashTable.insert(1020);
+			hashTable.countRehashes();
+
+			for (int i = 0; i < 1019; i++) {
+				if (!hashTable.lookup(i)) {
+					cout << "Failure :(" << endl;
+					break;
+				}
+				if (!hashTable.lookup(i * 1019 + i)) {
+					cout << "Failure :(" << endl;
+					break;
+				}
+			}
+			if (!hashTable.lookup(1020)) {
+				cout << "Failure :(" << endl;
+			}
 		}
 		else if (mainChoice == 5) {
 			cout << "Quitting..." << endl;
