@@ -6,6 +6,7 @@ public:
 	void insert(int toInsert);
 	void deleteValue(int toDelete);
 	void lookup(int toLookup);
+	double loadFactor();
 	LinearProbing(int hashFunction);
 	~LinearProbing();
 

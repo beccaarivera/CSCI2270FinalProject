@@ -120,3 +120,14 @@ int LinearProbing::hashFunc1(int toHash) {
 int LinearProbing::hashFunc2(int toHash) {
 	return ((int) floor(toHash / TABLE_SIZE)) % TABLE_SIZE;
 }
+
+double LinearProbing::loadFactor() {
+	int numFilled = 0;
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (hashTable[i] != NULL) {
+			numFilled++;
+		}
+	}
+
+	return (((double)numFilled) / ((double)TABLE_SIZE));
+}

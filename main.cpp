@@ -88,14 +88,13 @@ int main() {
 		else if (mainChoice == 3) {
 			// prompt user to choose hash function to implement
 			hashMenu();
+			int tablesize = 10009;
 			while (true) {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
 					LinearProbing hashTable = LinearProbing(1);
-					string toAdd;
-					//while (getline(csvfile, toAdd,',')) {
-						//hashTable.insert(stoi(toAdd));
-					//}
+
+
 					break;
 				}
 				else if (hashChoice == 2) {
@@ -123,6 +122,21 @@ int main() {
 		}
 	}
 }
+
+
+void testLinearProbing(LinearProbing hashTable, int tablesize, string filename) {
+	int num;
+	string tmpNum;
+	ifstream file(filename);
+	while (hashTable.loadFactor()<0.1) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		cout << num << endl;
+	}
+
+
+}
+
 
 //cuckoo hashing test
 /*
