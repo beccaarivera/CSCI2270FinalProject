@@ -1,4 +1,13 @@
 #pragma once
+
+struct CuckooBin {
+	int value;
+	bool visited;
+	CuckooBin(int val, bool vis) {
+		value = val;
+		visited = vis;
+	}
+};
 class CuckooHashing
 {
 public:
@@ -8,19 +17,22 @@ public:
 	CuckooHashing();
 	~CuckooHashing();
 	void countRehashes();
+	void printValues();
 
 private:
 	int TABLE_SIZE;
 
-	int** hashTable1;
-	int** hashTable2;
+	CuckooBin** hashTable1;
+	CuckooBin** hashTable2;
 	int rehashCounter;
 
 	int hashFunc1(int toHash);
 	int hashFunc2(int toHash);
-	bool swap(int originalKey, int originalTable, int toSwapKey, int tableNum);
+	bool swap(int toSwapKey, int tableNum);
+	bool swapHelper(int toSwapKey, int tableNum);
 	bool insertHelper(int toInsert);
-
 	void rehash(int toInsert);
+	void markAllUnvisited();
+	void deleteTables();
 };
 
