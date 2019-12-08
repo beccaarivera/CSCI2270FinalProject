@@ -6,6 +6,7 @@
 #include "LinearProbing.h"
 #include <chrono>
 #include "LL.hpp"
+#include "BST.hpp"
 
 using namespace std;
 

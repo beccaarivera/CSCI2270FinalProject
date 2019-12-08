@@ -16,18 +16,19 @@ struct LLnode {
 };
 
 // node structure for hash table
-struct tableNode {
+struct tableNodeLL {
   LLnode* head = NULL;
 };
 
 class hashLL {
   public:
     hashLL();
-    bool isEmpty(int key);
+    int hashCalcLL(int value, int choice);
+    bool isEmptyLL(int key);
     void insertLL(int value, int choice);
     void lookupLL(int value, int choice);
     void deleteLL(int value, int choice);
   private:
-    tableNode** table;
+    tableNodeLL** table;
     int TABLE_SIZE = 10009;
 };

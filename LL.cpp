@@ -8,14 +8,24 @@ using namespace std;
 /* constructor for hash table
    initializes all indices to NULL */
 hashLL::hashLL() {
-  table = new tableNode* [TABLE_SIZE];
+  table = new tableNodeLL* [TABLE_SIZE];
   for (int i = 0; i < TABLE_SIZE; i++) {
-    table[i] = new tableNode;
+    table[i] = new tableNodeLL;
   }
 }
 
-// checks if the hash table location for a given key is empty
-bool hashLL::isEmpty(int key) {
+int hashLL::hashCalcLL(int value, int choice) {
+  // apply hash function
+  int key;
+  if (choice == 1) {
+    return (value % TABLE_SIZE);
+  }
+  else if (choice == 2) {
+    return ((int)floor(value/TABLE_SIZE) % TABLE_SIZE);
+  }
+}
+
+bool hashLL::isEmptyLL(int key) {
   if (table[key]->head == NULL)
     return true;
   else
@@ -23,19 +33,12 @@ bool hashLL::isEmpty(int key) {
 }
 
 void hashLL::insertLL(int value, int choice) {
-  // apply hash function
-  int key;
-  if (choice == 1) {
-    key = value % TABLE_SIZE;
-  }
-  else if (choice == 2) {
-    key = (int)floor(value/TABLE_SIZE) % TABLE_SIZE;
-  }
+  int key = hashCalcLL(value, choice);
   // create linked list node with value val
   LLnode* node = new LLnode;
   node->val = value;
   // case for if hash location is empty
-  if (isEmpty(key)) {
+  if (isEmptyLL(key)) {
     table[key]->head = node;
   }
   // if hash location already has values, add to end of linked list
@@ -53,13 +56,11 @@ void hashLL::insertLL(int value, int choice) {
 }
 
 void hashLL::lookupLL(int value, int choice) {
-  // apply hash function
-  int key;
-  if (choice == 1) {
-    key = value % TABLE_SIZE;
-  }
-  else if (choice == 2) {
-    key = (int)floor(value/TABLE_SIZE) % TABLE_SIZE;
+  int key = hashCalcLL(value, choice);
+  // check if linked list is empty at hash location
+  if (isEmptyLL(key)) {
+    cout << "Linked List empty at this location, not found" << endl;
+    return;
   }
   // case for if searched value is head
   if (table[key]->head->val == value) {
@@ -82,13 +83,11 @@ void hashLL::lookupLL(int value, int choice) {
 }
 
 void hashLL::deleteLL(int value, int choice) {
-  // apply hash function
-  int key;
-  if (choice == 1) {
-    key = value % TABLE_SIZE;
-  }
-  else if (choice == 2) {
-    key = (int)floor(value/TABLE_SIZE) % TABLE_SIZE;
+  int key = hashCalcLL(value, choice);
+  // check if linked list is empty at hash location
+  if (isEmptyLL(key)) {
+    cout << "Linked List empty at this location, cannot delete" << endl;
+    return;
   }
   // case to delete head
   if (table[key]->head->val == value) {
