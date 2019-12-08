@@ -263,6 +263,10 @@ void CuckooHashing::deleteTables() {
 			hashTable2[i] = NULL;
 		}
 	}
-	delete[] hashTable1;
-	delete[] hashTable2;
+	if (hashTable1 != NULL) {
+		delete[] hashTable1;
+	}
+	if (hashTable2 != NULL) {
+		delete[] hashTable2;
+	}
 }

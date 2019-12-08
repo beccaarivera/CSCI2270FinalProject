@@ -155,11 +155,23 @@ int main() {
 					hashTable.clearTable();
 
 					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 1);
-					hashTable.~LinearProbing();
+					break;
 				}
 				else if (hashChoice == 2) {
 					LinearProbing hashTable = LinearProbing(2);
 					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.1);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.2);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.5);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.7);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 1);
 					break;
 				}
 				else {

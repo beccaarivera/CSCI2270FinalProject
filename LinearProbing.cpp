@@ -19,7 +19,9 @@ LinearProbing::~LinearProbing() {
 			hashTable[i] = NULL;
 		}
 	}
-	delete[] hashTable;
+	if (hashTable != NULL) {
+		delete[] hashTable;
+	}
 }
 void LinearProbing::clearTable() {
 	for (int i = 0; i < TABLE_SIZE; i++) {
