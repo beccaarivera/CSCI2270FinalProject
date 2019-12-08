@@ -113,30 +113,6 @@ int main() {
 		else if (mainChoice == 4) {
 			// uses both hash functions by definition
 			CuckooHashing hashTable;
-			int tablesize = 5;
-			//fill up the table
-			for (int i = 0; i < tablesize; i++) {
-				hashTable.insert(i);
-				hashTable.insert(i * tablesize + i);
-			}
-
-			//cause rehash
-			hashTable.insert(tablesize+1);
-			hashTable.countRehashes();
-			/*
-			for (int i = 0; i < tablesize; i++) {
-				if (!hashTable.lookup(i)) {
-					cout << "Failure :(" << endl;
-					break;
-				}
-				if (!hashTable.lookup(i * tablesize + i)) {
-					cout << "Failure :(" << endl;
-					break;
-				}
-			}
-			if (!hashTable.lookup(1020)) {
-				cout << "Failure :(" << endl;
-			}*/
 		}
 		else if (mainChoice == 5) {
 			cout << "Quitting..." << endl;
@@ -147,3 +123,26 @@ int main() {
 		}
 	}
 }
+
+//cuckoo hashing test
+/*
+			int tablesize = 5;
+			//fill up the table
+			for (int i = 0; i < tablesize; i++) {
+				hashTable.insert(i);
+				hashTable.insert(i * tablesize + i);
+			}
+
+			//cause rehash
+			hashTable.insert(tablesize*tablesize+tablesize);
+			hashTable.countRehashes();
+
+			hashTable.printValues();
+
+			cout << "Deleting all values except " << tablesize*tablesize+tablesize << endl;
+			for (int i = 0; i < tablesize; i++) {
+				hashTable.deleteValue(i);
+				hashTable.deleteValue(i * tablesize + i);
+			}
+			hashTable.printValues();
+			hashTable.lookup(tablesize * tablesize + tablesize);*/
