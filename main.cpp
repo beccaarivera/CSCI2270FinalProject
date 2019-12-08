@@ -108,30 +108,30 @@ int main() {
 		else if (mainChoice == 4) {
 			// uses both hash functions by definition
 			CuckooHashing hashTable;
-
+			int tablesize = 5;
 			//fill up the table
-			for (int i = 0; i < 1019; i++) {
+			for (int i = 0; i < tablesize; i++) {
 				hashTable.insert(i);
-				hashTable.insert(i * 1019 + i);
+				hashTable.insert(i * tablesize + i);
 			}
 
 			//cause rehash
-			hashTable.insert(1020);
+			hashTable.insert(tablesize+1);
 			hashTable.countRehashes();
-
-			for (int i = 0; i < 1019; i++) {
+			/*
+			for (int i = 0; i < tablesize; i++) {
 				if (!hashTable.lookup(i)) {
 					cout << "Failure :(" << endl;
 					break;					
 				}
-				if (!hashTable.lookup(i * 1019 + i)) {
+				if (!hashTable.lookup(i * tablesize + i)) {
 					cout << "Failure :(" << endl;
 					break;
 				}
 			}
 			if (!hashTable.lookup(1020)) {
 				cout << "Failure :(" << endl;
-			}
+			}*/
 		}
 		else if (mainChoice == 5) {
 			cout << "Quitting..." << endl;

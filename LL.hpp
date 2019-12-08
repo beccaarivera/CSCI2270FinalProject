@@ -28,7 +28,6 @@ struct tableNode {
   LLnode* head = NULL;
 };
 
-int TABLE_SIZE = 10009;
 
 class hashLL {
   public:
@@ -39,4 +38,5 @@ class hashLL {
     void deleteLL(int val, int choice);
   private:
     tableNode** table;
+	int TABLE_SIZE = 10009;
 };
