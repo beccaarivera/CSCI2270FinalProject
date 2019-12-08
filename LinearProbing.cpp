@@ -118,5 +118,5 @@ int LinearProbing::hashFunc1(int toHash) {
 }
 
 int LinearProbing::hashFunc2(int toHash) {
-	return floor(toHash / TABLE_SIZE);
+	return ((int) floor(toHash / TABLE_SIZE)) % TABLE_SIZE;
 }

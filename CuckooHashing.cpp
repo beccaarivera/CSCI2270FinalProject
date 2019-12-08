@@ -34,7 +34,7 @@ int CuckooHashing::hashFunc1(int toHash) {
 }
 
 int CuckooHashing::hashFunc2(int toHash) {
-	return floor(toHash / TABLE_SIZE);
+	return ((int) floor(toHash / TABLE_SIZE)) % TABLE_SIZE;
 }
 
 //insertHelper is here so that rehashing won't call itself if the new table size doesn't work
