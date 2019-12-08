@@ -9,11 +9,12 @@ public:
 	double loadFactor();
 	LinearProbing(int hashFunction);
 	~LinearProbing();
-
+	void clearTable();
 private:
 	int TABLE_SIZE;
 	int hashFunc;
 	int** hashTable;
+
 	int hashFunc1(int toHash);
 	int hashFunc2(int toHash);
 };

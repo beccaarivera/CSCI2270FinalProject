@@ -19,11 +19,19 @@ LinearProbing::~LinearProbing() {
 			hashTable[i] = NULL;
 		}
 	}
-	delete hashTable;
+	delete[] hashTable;
+}
+void LinearProbing::clearTable() {
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (hashTable[i] != NULL) {
+			delete hashTable[i];
+			hashTable[i] = NULL;
+		}
+	}
 }
 
 void LinearProbing::insert(int toInsert) {
-	cout << "Adding " << toInsert << endl;
+	//cout << "Adding " << toInsert << endl;
 	int key = -1;
 	if (hashFunc == 1) {
 		key = hashFunc1(toInsert);
@@ -40,12 +48,12 @@ void LinearProbing::insert(int toInsert) {
 		}
 	}
 	hashTable[key] = new int(toInsert);
-	cout << "Added at " << key << "." << endl;
+	//cout << "Added at " << key << "." << endl;
 
 }
 
 void LinearProbing::deleteValue(int toDelete) {
-	cout << "Deleting " << toDelete << endl;
+	//cout << "Deleting " << toDelete << endl;
 	int key = -1;
 	if (hashFunc == 1) {
 		key = hashFunc1(toDelete);
@@ -57,7 +65,7 @@ void LinearProbing::deleteValue(int toDelete) {
 	if (hashTable[key] != NULL && *hashTable[key] == toDelete) {
 		delete hashTable[key];
 		hashTable[key] = NULL;
-		cout << "Deleted from " << key << "." << endl;
+		//cout << "Deleted from " << key << "." << endl;
 		return;
 	}
 
@@ -70,7 +78,7 @@ void LinearProbing::deleteValue(int toDelete) {
 		if (hashTable[key] != NULL && *hashTable[key] == toDelete) {
 			delete hashTable[key];
 			hashTable[key] = NULL;
-			cout << "Value " << toDelete << " deleted from key " << key << endl;
+			//cout << "Value " << toDelete << " deleted from key " << key << endl;
 			return;
 		}
 		//increment the key
@@ -92,7 +100,7 @@ void LinearProbing::lookup(int toLookup) {
 	}
 
 	if (hashTable[key] != NULL && *hashTable[key] == toLookup) {
-		cout << "Value " << toLookup << " found at key " << key << endl;
+		//cout << "Value " << toLookup << " found at key " << key << endl;
 		return;
 	}
 
@@ -103,7 +111,7 @@ void LinearProbing::lookup(int toLookup) {
 	while (key!=originalKey) {
 		//print and return if found
 		if (hashTable[key]!=NULL && *hashTable[key] == toLookup) {
-			cout << "Value " << toLookup << " found at key " << key << endl;
+			//cout << "Value " << toLookup << " found at key " << key << endl;
 			return;
 		}
 		//increment the key

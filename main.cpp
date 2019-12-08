@@ -25,27 +25,53 @@ void hashMenu() {
 	cout << "2. Floor(x/TABLE_SIZE) mod TABLE_SIZE" << endl;
 }
 
-void testLinearProbing(LinearProbing hashTable, int tablesize, string filename) {
+void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename, double loadFactor) {
 	int num;
 	string tmpNum;
 	ifstream file(filename);
 
+	int toDelete[100];
+
 	//get load factor to 0.1
-	while (hashTable.loadFactor() < 0.1) {
+	int counter = 0;
+	while (hashTable.loadFactor() < loadFactor) {
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
+		toDelete[counter % 100] = num;
 		hashTable.insert(num);
+		counter++;
 	}
 
 	auto t1 = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < 100; i++) {
-		getline(file, tmpNum, ',');
-		num = stoi(tmpNum);
-		hashTable.insert(num);
+		hashTable.deleteValue(toDelete[i]);
 	}
 	auto t2 = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-	cout << "Took " << duration << " microseconds to insert 100 numbers at load factor 0.1." << endl;
+	auto durationDelete = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+	t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[i] = num;
+		hashTable.insert(num);
+	}
+	t2 = std::chrono::high_resolution_clock::now();
+	auto durationInsert = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+
+	t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		hashTable.lookup(toDelete[i]);
+	}
+	t2 = std::chrono::high_resolution_clock::now();
+	auto durationLookup = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+	cout << "Linear probing at load factor " << loadFactor << ":" << endl;
+	cout << "Delete 100 numbers: " << durationDelete << " microseconds." << endl;
+	cout << "Insert 100 numbers: " << durationInsert << " microseconds." << endl;
+	cout << "Lookup 100 numbers: " << durationLookup << " microseconds." << endl;
+	cout << endl;
 }
 
 int main() {
@@ -64,7 +90,7 @@ int main() {
 	}*/
 
 	// declare class for linked list implementation
-  hashLL ll;
+	hashLL ll;
 
 	while (true) {
 		mainMenu();
@@ -116,12 +142,24 @@ int main() {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
 					LinearProbing hashTable = LinearProbing(1);
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv");
-					break;
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.1);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.2);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.5);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.7);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 1);
+					hashTable.~LinearProbing();
 				}
 				else if (hashChoice == 2) {
 					LinearProbing hashTable = LinearProbing(2);
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv");
+					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.1);
 					break;
 				}
 				else {

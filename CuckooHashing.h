@@ -21,7 +21,6 @@ public:
 
 private:
 	int TABLE_SIZE;
-
 	CuckooBin** hashTable1;
 	CuckooBin** hashTable2;
 	int rehashCounter;
