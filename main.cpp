@@ -25,6 +25,29 @@ void hashMenu() {
 	cout << "2. Floor(x/TABLE_SIZE) mod TABLE_SIZE" << endl;
 }
 
+void testLinearProbing(LinearProbing hashTable, int tablesize, string filename) {
+	int num;
+	string tmpNum;
+	ifstream file(filename);
+
+	//get load factor to 0.1
+	while (hashTable.loadFactor() < 0.1) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		hashTable.insert(num);
+	}
+
+	auto t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		hashTable.insert(num);
+	}
+	auto t2 = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	cout << "Took " << duration << " microseconds to insert 100 numbers at load factor 0.1." << endl;
+}
+
 int main() {
 	// prompt user to chosse which collision resolution method to use
 	int mainChoice;
@@ -123,28 +146,6 @@ int main() {
 }
 
 
-void testLinearProbing(LinearProbing hashTable, int tablesize, string filename) {
-	int num;
-	string tmpNum;
-	ifstream file(filename);
-
-	//get load factor to 0.1
-	while (hashTable.loadFactor()<0.1) {
-		getline(file, tmpNum, ',');
-		num = stoi(tmpNum);
-		hashTable.insert(num);
-	}
-
-	auto t1=std::chrono::high_resolution_clock::now();
-	for (int i = 0; i < 100; i++) {
-		getline(file, tmpNum, ',');
-		num = stoi(tmpNum);
-		hashTable.insert(num);
-	}
-	auto t2 = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-	cout << "Took " << duration << " microseconds to insert 100 numbers at load factor 0.1." << endl;
-}
 
 
 //cuckoo hashing test
