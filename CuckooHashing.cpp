@@ -4,13 +4,27 @@
 using namespace std;
 
 CuckooHashing::CuckooHashing() {
-	TABLE_SIZE = 5;
+	TABLE_SIZE = 10009;
+	TABLE_SIZE_INCREMENT = 10;
 	rehashCounter = 0;
 	hashTable1 = new CuckooBin * [TABLE_SIZE];
 	hashTable2 = new CuckooBin * [TABLE_SIZE];
 	for (int i = 0; i < TABLE_SIZE; i++) {
 		hashTable1[i] = NULL;
 		hashTable2[i] = NULL;
+	}
+}
+
+void CuckooHashing::clearTables() {
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (hashTable1[i] != NULL) {
+			delete hashTable1[i];
+			hashTable1[i] = NULL;
+		}
+		if (hashTable2[i] != NULL) {
+			delete hashTable2[i];
+			hashTable2[i] = NULL;
+		}
 	}
 }
 
@@ -66,7 +80,7 @@ void CuckooHashing::insert(int toInsert) {
 }
 
 void CuckooHashing::countRehashes() {
-	cout << "Hash table has rehashed " << rehashCounter << " times." << endl;
+	cout << "Cuckoo hash table has rehashed " << rehashCounter << " times." << endl;
 }
 
 void CuckooHashing::deleteValue(int toDelete) {
@@ -116,7 +130,7 @@ void CuckooHashing::rehash(int toInsert) {
 	while (true) {
 		//cout << "Incrementing table size" << endl;
 		toContinue = false;
-		TABLE_SIZE++;
+		TABLE_SIZE+=TABLE_SIZE_INCREMENT;
 		rehashCounter++;
 
 		hashTable1 = new CuckooBin * [TABLE_SIZE];

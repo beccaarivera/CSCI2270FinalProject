@@ -18,12 +18,14 @@ public:
 	~CuckooHashing();
 	void countRehashes();
 	void printValues();
+	void clearTables();
 
 private:
 	int TABLE_SIZE;
 	CuckooBin** hashTable1;
 	CuckooBin** hashTable2;
 	int rehashCounter;
+	int TABLE_SIZE_INCREMENT;
 
 	int hashFunc1(int toHash);
 	int hashFunc2(int toHash);

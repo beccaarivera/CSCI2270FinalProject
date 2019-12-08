@@ -74,6 +74,56 @@ void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename,
 	cout << endl;
 }
 
+void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename, double loadFactor) {
+	int num;
+	string tmpNum;
+	ifstream file(filename);
+
+	int toDelete[100];
+
+	//get load factor to 0.1
+	int counter = 0;
+	while (((double) counter) < loadFactor*((double) tablesize)) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[counter % 100] = num;
+		hashTable.insert(num);
+		counter++;
+	}
+
+	auto t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		hashTable.deleteValue(toDelete[i]);
+	}
+	auto t2 = std::chrono::high_resolution_clock::now();
+	auto durationDelete = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+	t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[i] = num;
+		hashTable.insert(num);
+	}
+	t2 = std::chrono::high_resolution_clock::now();
+	auto durationInsert = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+
+	t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		hashTable.lookup(toDelete[i]);
+	}
+	t2 = std::chrono::high_resolution_clock::now();
+	auto durationLookup = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+	cout << "Cuckoo hashing at load factor " << loadFactor << ":" << endl;
+	cout << "Delete 100 numbers: " << durationDelete << " microseconds." << endl;
+	cout << "Insert 100 numbers: " << durationInsert << " microseconds." << endl;
+	cout << "Lookup 100 numbers: " << durationLookup << " microseconds." << endl;
+	hashTable.countRehashes();
+	cout << endl;
+}
+
 int main() {
 	// prompt user to chosse which collision resolution method to use
 	int mainChoice;
@@ -141,37 +191,39 @@ int main() {
 			while (true) {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
+					string filename = "dataSetA.csv";
 					LinearProbing hashTable = LinearProbing(1);
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.1);
+					testLinearProbing(hashTable, tablesize, filename, 0.1);
 					hashTable.clearTable();
 
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.2);
+					testLinearProbing(hashTable, tablesize, filename, 0.2);
 					hashTable.clearTable();
 
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.5);
+					testLinearProbing(hashTable, tablesize, filename, 0.5);
 					hashTable.clearTable();
 
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.7);
+					testLinearProbing(hashTable, tablesize, filename, 0.7);
 					hashTable.clearTable();
 
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 1);
+					testLinearProbing(hashTable, tablesize, filename, 1);
 					break;
 				}
 				else if (hashChoice == 2) {
+					string filename = "dataSetA.csv";
 					LinearProbing hashTable = LinearProbing(2);
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.1);
+					testLinearProbing(hashTable, tablesize, filename, 0.1);
 					hashTable.clearTable();
 
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.2);
+					testLinearProbing(hashTable, tablesize, filename, 0.2);
 					hashTable.clearTable();
 
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.5);
+					testLinearProbing(hashTable, tablesize, filename, 0.5);
 					hashTable.clearTable();
 
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 0.7);
+					testLinearProbing(hashTable, tablesize, filename, 0.7);
 					hashTable.clearTable();
 
-					testLinearProbing(hashTable, tablesize, "dataSetA.csv", 1);
+					testLinearProbing(hashTable, tablesize, filename, 1);
 					break;
 				}
 				else {
@@ -184,6 +236,22 @@ int main() {
 		else if (mainChoice == 4) {
 			// uses both hash functions by definition
 			CuckooHashing hashTable;
+			int tablesize = 10009;
+			string filename = "dataSetA.csv";
+			testCuckooHashing(hashTable, tablesize, filename, 0.1);
+			hashTable.clearTables();
+			
+			testCuckooHashing(hashTable, tablesize, filename, 0.2);
+			hashTable.clearTables();
+
+			testCuckooHashing(hashTable, tablesize, filename, 0.5);
+			hashTable.clearTables();
+
+			testCuckooHashing(hashTable, tablesize, filename, 0.7);
+			hashTable.clearTables();
+
+			testCuckooHashing(hashTable, tablesize, filename, 1);
+			hashTable.clearTables();
 		}
 		else if (mainChoice == 5) {
 			cout << "Quitting..." << endl;
