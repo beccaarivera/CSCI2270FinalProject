@@ -6,6 +6,7 @@
 #include "LinearProbing.h"
 #include <chrono>
 #include "LL.hpp"
+#include "BST.hpp"
 
 using namespace std;
 
@@ -28,15 +29,20 @@ int main() {
 	// prompt user to chosse which collision resolution method to use
 	int mainChoice;
 	int hashChoice;
-	string filename = "dataSetA.csv";
-	fstream csvfile;
-	csvfile.open(filename);
 
+	// read csv file
+	/*int num;
+	string tmpNum;
+	ifstream file("dataSetA.csv");
+	while (file.good()){
+		getline(file,tmpNum,',');
+		num = stoi(tmpNum);
+		cout << num << endl;
+	}*/
+
+	// declare class for linked list implementation
   hashLL ll;
 
-
-	//int quit = 0;
-	//while(quit == 0){
 	while (true) {
 		mainMenu();
 		cin >> mainChoice;
@@ -48,12 +54,8 @@ int main() {
 			switch (hashChoice) {
 				// x mod TABLE_SIZE
 			case 1:
-				if (ll.isEmpty(0))
-          cout << "is empty, worked!" << endl;
-        else
-          cout << "somethin's wrong" << endl;
 
-			break;
+				break;
 
 				// Floor(x/TABLE_SIZE) mod TABLE_SIZE
 			case 2:
@@ -72,12 +74,12 @@ int main() {
 			switch (hashChoice) {
 				// x mod TABLE_SIZE
 			case 1:
-				cout << "in hash 1" << endl;
+
 				break;
 
 				// Floor(x/TABLE_SIZE) mod TABLE_SIZE
 			case 2:
-				cout << "in hash 2" << endl;
+
 				break;
 			}
 
@@ -90,7 +92,10 @@ int main() {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
 					LinearProbing hashTable = LinearProbing(1);
-
+					string toAdd;
+					//while (getline(csvfile, toAdd,',')) {
+						//hashTable.insert(stoi(toAdd));
+					//}
 					break;
 				}
 				else if (hashChoice == 2) {
@@ -122,7 +127,7 @@ int main() {
 			for (int i = 0; i < tablesize; i++) {
 				if (!hashTable.lookup(i)) {
 					cout << "Failure :(" << endl;
-					break;					
+					break;
 				}
 				if (!hashTable.lookup(i * tablesize + i)) {
 					cout << "Failure :(" << endl;
