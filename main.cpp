@@ -108,6 +108,7 @@ int main() {
 		else if (mainChoice == 4) {
 			// uses both hash functions by definition
 			CuckooHashing hashTable;
+
 		}
 		else if (mainChoice == 5) {
 			cout << "Quitting..." << endl;

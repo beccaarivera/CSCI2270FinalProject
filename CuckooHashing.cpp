@@ -64,8 +64,8 @@ bool CuckooHashing::insertHelper(int toInsert) {
 	}
 	else {
 		//rehash :(
-		rehashCounter++;
 		return true;
+		cout << "Rehash counter: " << rehashCounter << endl;
 	}
 	return false;
 }
@@ -83,10 +83,12 @@ void CuckooHashing::deleteValue(int toDelete) {
 	int address1 = hashFunc1(toDelete);
 	int address2 = hashFunc2(toDelete);
 	if (*hashTable1[address1] == toDelete) {
+		cout << "Deleting " << toDelete << " from " << address1 << " in table 1." << endl;
 		delete hashTable1[address1];
 		hashTable1[address1] = NULL;
 	}
 	else if (*hashTable2[address2] == toDelete) {
+		cout << "Deleting " << toDelete << " from " << address2 << " in table 2." << endl;
 		delete hashTable2[address2];
 		hashTable2[address2] = NULL;
 	}
@@ -100,10 +102,10 @@ void CuckooHashing::lookup(int toLookup) {
 	//value will be at one of two locations
 	int address1 = hashFunc1(toLookup);
 	int address2 = hashFunc2(toLookup);
-	if (*hashTable1[address1] == toLookup) {
+	if (hashTable1[address1] != NULL && *hashTable1[address1] == toLookup) {
 		std::cout << "Value found at index " << address1 << " in hash table 1." << std::endl;
 	}
-	else if (*hashTable2[address2] == toLookup) {
+	else if (hashTable2[address2] != NULL && *hashTable2[address2] == toLookup) {
 		std::cout << "Value found at index " << address2 << " in hash table 2." << std::endl;
 	}
 	else {
@@ -119,6 +121,7 @@ void CuckooHashing::rehash() {
 
 	while (true) {
 		TABLE_SIZE++;
+		rehashCounter++;
 
 		hashTable1 = new int* [TABLE_SIZE];
 		hashTable2 = new int* [TABLE_SIZE];
