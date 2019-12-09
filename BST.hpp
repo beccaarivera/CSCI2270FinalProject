@@ -24,6 +24,8 @@ class hashBST {
     void insertBST(int value, int choice);
     void lookupBST(int value, int choice);
     void deleteBST(int value, int choice);
+    treeNode* deleteHelper(treeNode* pres);
+    treeNode* getMinValueNode(treeNode* pres);
   private:
     tableNodeBST** table;
     int TABLE_SIZE = 10009;

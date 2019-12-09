@@ -99,13 +99,13 @@ void hashBST::lookupBST(int value, int choice) {
   cout << "found!" << endl << "\n";
 }
 
-treeNode* getMinValueNode(treeNode* pres) {
+treeNode* hashBST::getMinValueNode(treeNode* pres) {
   if (pres->left == NULL)
     return pres;
   return getMinValueNode(pres->left);
 }
 
-treeNode* deleteHelper(treeNode* pres) {
+treeNode* hashBST::deleteHelper(treeNode* pres) {
   // delete leaf
   if (pres->left && pres->right == NULL) {
     delete pres;
@@ -131,10 +131,10 @@ treeNode* deleteHelper(treeNode* pres) {
   else {
     // replace with min value from right subtree
     treeNode* min = getMinValueNode(pres->right);
-    treeNode* parent = min->parent;
-    parent->left = min->right;
+    treeNode* par = min->parent;
+    par->left = min->right;
     if (min->right != NULL)
-      min->right->parent = parent;
+      min->right->parent = par;
     min->left = pres->left;
     min->right = pres->right;
     min->parent = pres->parent;
@@ -164,12 +164,16 @@ void hashBST::deleteBST(int value, int choice) {
     }
   }
   // node found
-  treeNode* parent = pres->parent;
+  //cout << "found node to delete: " << pres->val << endl;
+  treeNode* par = pres->parent;
+  //cout << "debug" << endl;
   //
-  if (parent == NULL)
+  if (par == NULL) {
     table[key]->root = deleteHelper(pres);
-  else if (parent->left == pres)
-    parent->left = deleteHelper(pres);
+    cout << "debug" << endl;
+  }
+  else if (par->left == pres)
+    par->left = deleteHelper(pres);
   else
-    parent->right = deleteHelper(pres);
+    par->right = deleteHelper(pres);
 }
