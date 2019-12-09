@@ -222,6 +222,7 @@ void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename,
 	}
 	cout << counter << " numbers inserted to bring load factor to " << loadFactor << endl;
 
+	//delete 100 values and record the time each takes
 	for (int i = 0; i < 100; i++) {
 		auto t1 = std::chrono::high_resolution_clock::now();
 		hashTable.deleteValue(toDelete[i]);
@@ -231,16 +232,20 @@ void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename,
 	double deleteMean = 0;
 	double delete_stddev = 0;
 	int totalTime = 0;
+
+	//calculate mean
 	for (int i = 0; i < 100; i++) {
 		totalTime += times[i];
 	}
 	deleteMean = ((double)totalTime) / 100.0;
 
+	//calculate std dev
 	for (int i = 0; i < 100; i++) {
 		delete_stddev += pow(((double)times[i]) - deleteMean,2);
 	}
-	delete_stddev /= 100;
+	delete_stddev /= 99;
 
+	//insert 100 values and record the time each takes
 	for (int i = 0; i < 100; i++) {
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
@@ -253,16 +258,20 @@ void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename,
 	double insertMean = 0;
 	double insert_stddev = 0;
 	totalTime = 0;
+
+	//calculate mean
 	for (int i = 0; i < 100; i++) {
 		totalTime += times[i];
 	}
 	insertMean = ((double)totalTime) / 100.0;
 
+	//calculate std dev
 	for (int i = 0; i < 100; i++) {
 		insert_stddev += pow(((double)times[i]) - deleteMean, 2);
 	}
-	insert_stddev /= 100;
+	insert_stddev /= 99;
 
+	//lookup 100 values and record the time each takes
 	for (int i = 0; i < 100; i++) {
 		auto t1 = std::chrono::high_resolution_clock::now();
 		hashTable.lookup(toDelete[i]);
@@ -272,15 +281,18 @@ void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename,
 	double lookupMean = 0;
 	double lookup_stddev = 0;
 	totalTime = 0;
+
+	//calculate mean
 	for (int i = 0; i < 100; i++) {
 		totalTime += times[i];
 	}
 	lookupMean = ((double)totalTime) / 100.0;
 
+	//calculate std dev
 	for (int i = 0; i < 100; i++) {
 		lookup_stddev += pow(((double)times[i]) - deleteMean, 2);
 	}
-	lookup_stddev /= 100;
+	lookup_stddev /= 99;
 
 	cout << "Linear probing at load factor " << loadFactor << ":" << endl;
 	cout << "Average delete time: " << deleteMean << " microseconds with " << delete_stddev << " microseconds standard deviation ." << endl;
@@ -289,6 +301,7 @@ void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename,
 	cout << endl;
 }
 
+//tests cuckoo hash table with given hash table, tablesize, filename of data, and at the given load factor
 void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename, double loadFactor) {
 	int num;
 	string tmpNum;
@@ -299,8 +312,11 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 
 	//get load factor to desired value
 	int counter = 0;
+
+	//read in data until desired load factor is reached
 	while (hashTable.numEntries() < 2 * loadFactor * ((double)tablesize)) { //we multiply table size by 2 to account for both sides
 		if (!file.good()) {
+			//prevent error by ensuring the file is still good
 			cout << "Reached end of file." << endl;
 			return;
 		}
@@ -308,35 +324,34 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 		num = stoi(tmpNum);
 		toDelete[counter % 100] = num;
 		hashTable.insert(num);
-		//cout << "Num entries: " << hashTable.numEntries() << endl;
-		//cout << "Adding " << num << endl;
 		counter++;
 
 	}
-
+	//delete 100 entries and record each time it takes
 	for (int i = 0; i < 100; i++) {
-
 		auto t1 = std::chrono::high_resolution_clock::now();
 		hashTable.deleteValue(toDelete[i]);
 		auto t2 = std::chrono::high_resolution_clock::now();
 		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 	}
+
 	double deleteMean = 0;
 	double delete_stddev = 0;
-
 	int totalTime = 0;
+
+	//calculate mean
 	for (int i = 0; i < 100; i++) {
 		totalTime += times[i];
 	}
 	deleteMean = ((double)totalTime) / 100.0;
 
+	//calculate std dev
 	for (int i = 0; i < 100; i++) {
 		delete_stddev += pow(((double)times[i]) - deleteMean, 2);
 	}
-	delete_stddev /= 100;
+	delete_stddev /= 99;
 
-
-
+	//insert 100 entries and record each time it takes
 	for (int i = 0; i < 100; i++) {
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
@@ -350,17 +365,21 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 	double insertMean = 0;
 	double insert_stddev = 0;
 	totalTime = 0;
+
+	//calculate mean
 	for (int i = 0; i < 100; i++) {
 		totalTime += times[i];
 	}
 	insertMean = ((double)totalTime) / 100.0;
 
+	//calculate std dev
 	for (int i = 0; i < 100; i++) {
 		insert_stddev += pow(((double)times[i]) - insertMean, 2);
 	}
-	insert_stddev /= 100;
+	insert_stddev /= 99;
 
 
+	//lookup 100 entries and record each time it takes
 	for (int i = 0; i < 100; i++) {
 		auto t1 = std::chrono::high_resolution_clock::now();
 		hashTable.lookup(toDelete[i]);
@@ -370,15 +389,18 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 	double lookupMean = 0;
 	double lookup_stddev = 0;
 	totalTime = 0;
+
+	//calculate mean
 	for (int i = 0; i < 100; i++) {
 		totalTime += times[i];
 	}
 	lookupMean = ((double)totalTime) / 100.0;
 
+	//calculate stddev
 	for (int i = 0; i < 100; i++) {
 		lookup_stddev += pow(((double)times[i]) - lookupMean, 2);
 	}
-	lookup_stddev /= 100;
+	lookup_stddev /= 99;
 
 	cout << "Cuckoo hashing at load factor " << loadFactor << ":" << endl;
 	cout << "Average delete time: " << deleteMean << " microseconds with " << delete_stddev << " microseconds standard deviation ." << endl;
@@ -400,7 +422,7 @@ int main(int argc, char* argv[]) {
 	// class for linked list implementation
 	//hashLL ll;
 	// class for BST implementation
-	hashBST bst;
+	hashBST bst(hashChoice);
 
 	// initialize variables for user input
 	int mainChoice;
@@ -493,14 +515,14 @@ int main(int argc, char* argv[]) {
 				cout << "failed to open file" << endl << "\n";
 
 			//int i = 0;
-			while (file.good()) {
+			/*while (file.good()) {
 				getline(file, tmpNum, ',');
 				num = stoi(tmpNum);
 				// insert into hash table
 				//i++;
 				//cout << "inserting: " << i << "th element" << endl;
-				bst.insertBST(num, hashChoice);
-			}
+				bst.insertBST(num);
+			}*/
 			cout << "done populating hash table" << endl << "\n";
 
 			// hash table is now populated, ask user for action
@@ -513,24 +535,28 @@ int main(int argc, char* argv[]) {
 					cout << "Enter value to insert into hash table: " << endl;
 					cout << ">> ";
 					cin >> toInsert;
-					bst.insertBST(toInsert, hashChoice);
+					bst.insertBST(toInsert);
 				}
 				// lookup entry
 				else if (actionChoice == 2) {
 					cout << "Enter value to lookup" << endl;
 					cout << ">> ";
 					cin >> toLookup;
-					int hashKey = bst.hashCalcBST(toLookup, hashChoice);
-					bst.lookupBST(toLookup, hashKey);
+					if (bst.lookupBST(toLookup)) {
+						cout << endl <<"lookup successful!" << endl;
+					}
+					else {
+						cout << "lookup failure :(" << endl;
+					}
 				}
 				// delete entry
 				else if (actionChoice == 3) {
 					cout << "Enter value to delete" << endl;
 					cout << ">> ";
 					cin >> toDelete;
-					int hashKey = bst.hashCalcBST(toDelete, hashChoice);
+					int hashKey = bst.hashCalcBST(toDelete);
 					cout << "value of node input into delete function" << bst.table[hashKey]->root->val << endl;
-					bst.deleteBST(bst.table[hashKey]->root, toDelete);
+					bst.deleteBST(toDelete);
 				}
 				else if (actionChoice == 4) {
 					quit++;
@@ -544,6 +570,7 @@ int main(int argc, char* argv[]) {
 			int tablesize = 10009;
 			while (true) {
 				if (hashChoice == 1) {
+					//create hash table and then test at desired load factors
 					LinearProbing hashTable = LinearProbing(1, tablesize);
 					testLinearProbing(hashTable, tablesize, filename, 0.1);
 					hashTable.clearTable();
@@ -561,6 +588,7 @@ int main(int argc, char* argv[]) {
 					break;
 				}
 				else if (hashChoice == 2) {
+					//create hash table and then test at desired load factors
 					LinearProbing hashTable = LinearProbing(2, tablesize);
 					testLinearProbing(hashTable, tablesize, filename, 0.1);
 					hashTable.clearTable();
@@ -577,15 +605,12 @@ int main(int argc, char* argv[]) {
 					testLinearProbing(hashTable, tablesize, filename, 1);
 					break;
 				}
-				else {
-					cout << "Invalid hash choice." << endl;
-					//hashMenu();
-				}
 			}
 		}
 		// cuckoo hashing
 		else if (mainChoice == 4) {
-			//int tablesize = 5;
+			//create hash table and then test at desired load factors
+			//we use smaller load factors as the data sets have enough duplicate entries that 0.7 takes a prohibitive amount of time to achieve, if it would get there at all
 			int tablesize = 10009;
 			CuckooHashing hashTable(tablesize);
 
@@ -610,29 +635,3 @@ int main(int argc, char* argv[]) {
 		}
 	}
 }
-
-
-
-
-//cuckoo hashing test
-/*
-			int tablesize = 5;
-			//fill up the table
-			for (int i = 0; i < tablesize; i++) {
-				hashTable.insert(i);
-				hashTable.insert(i * tablesize + i);
-			}
-
-			//cause rehash
-			hashTable.insert(tablesize*tablesize+tablesize);
-			hashTable.countRehashes();
-
-			hashTable.printValues();
-
-			cout << "Deleting all values except " << tablesize*tablesize+tablesize << endl;
-			for (int i = 0; i < tablesize; i++) {
-				hashTable.deleteValue(i);
-				hashTable.deleteValue(i * tablesize + i);
-			}
-			hashTable.printValues();
-			hashTable.lookup(tablesize * tablesize + tablesize);*/

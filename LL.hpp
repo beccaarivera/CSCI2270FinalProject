@@ -5,20 +5,20 @@ using namespace std;
 
 // node structure for linked list
 struct LLnode {
-  /*LLnode(int k, int v, LLnode* next) {
-    this->key = k;
-    this->val = v;
-    this->next = NULL;
-  }*/
+	/*LLnode(int k, int v, LLnode* next) {
+	  this->key = k;
+	  this->val = v;
+	  this->next = NULL;
+	}*/
 
-  //int key; // index location in hash table
-  int val; // value
-  LLnode* next = NULL;
+	//int key; // index location in hash table
+	int val; // value
+	LLnode* next = NULL;
 };
 
 // node structure for hash table
 struct tableNodeLL {
-  LLnode* head = NULL;
+	LLnode* head = NULL;
 };
 
 class hashLL {

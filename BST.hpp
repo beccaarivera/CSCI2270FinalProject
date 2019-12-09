@@ -5,15 +5,15 @@ using namespace std;
 
 // node structure for BST
 struct treeNode {
-  int val;
-  treeNode* left = NULL;
-  treeNode* right = NULL;
-  //treeNode* parent = NULL;
+	int val;
+	treeNode* left = NULL;
+	treeNode* right = NULL;
+	//treeNode* parent = NULL;
 };
 
 // node structure for hash table
 struct tableNodeBST {
-  treeNode* root = NULL;
+	treeNode* root = NULL;
 };
 
 class hashBST {

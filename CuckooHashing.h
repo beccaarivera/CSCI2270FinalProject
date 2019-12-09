@@ -1,5 +1,6 @@
 #pragma once
 
+//structure to hold value in cuckoo hash tables and whether or not it has been visited
 struct CuckooBin {
 	int value;
 	bool visited;
@@ -8,6 +9,8 @@ struct CuckooBin {
 		visited = vis;
 	}
 };
+
+//main class to hold the cuckoo hash tables and related functions
 class CuckooHashing
 {
 public:
