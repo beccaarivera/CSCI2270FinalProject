@@ -15,20 +15,10 @@ hashLL::hashLL(int tablesize) {
 	}
 }
 
-double hashLL::loadFactorLL() {
-	int numFilled = 0;
-  //cout << "numfilled: " << numFilled << endl;
-	for (int i = 0; i < TABLE_SIZE; i++) {
-		if (table[i]->head != NULL) {
-			numFilled++;
-		}
-	}
-}
-
 void hashLL::clearTableLL() {
+	return;
 	for (int i = 0; i < TABLE_SIZE; i++) {
 		if (table[i] != NULL) {
-			delete table[i];
 			table[i] = NULL;
 		}
 	}
@@ -36,7 +26,6 @@ void hashLL::clearTableLL() {
 
 int hashLL::hashCalcLL(int value, int choice) {
   // apply hash function
-  int key;
   if (choice == 1) {
     return (value % TABLE_SIZE);
   }
@@ -79,12 +68,10 @@ void hashLL::lookupLL(int value, int choice) {
   int key = hashCalcLL(value, choice);
   // check if linked list is empty at hash location
   if (isEmptyLL(key)) {
-    cout << "linked list empty at this location, not found" << endl << "\n";
     return;
   }
   // case for if searched value is head
   if (table[key]->head->val == value) {
-    cout << "found!" << endl << "\n";
     return;
   }
   else {
@@ -95,7 +82,6 @@ void hashLL::lookupLL(int value, int choice) {
       prev = pres;
       pres = pres->next;
       if (pres->val == value) {
-        cout << "found!" << endl << "\n";
         return;
       }
     }
@@ -126,7 +112,6 @@ void hashLL::deleteLL(int value, int choice) {
       pres = pres->next;
       if (pres->val == value) {
         prev->next = pres->next;
-        cout << "deleting " << pres->val << endl << "\n";
         delete pres;
         return;
       }

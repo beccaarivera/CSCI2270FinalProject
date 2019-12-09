@@ -25,7 +25,6 @@ class hashLL {
   public:
     hashLL(int tablesize);
     void clearTableLL();
-    double loadFactorLL();
     int hashCalcLL(int value, int choice);
     bool isEmptyLL(int key);
     void insertLL(int value, int choice);
