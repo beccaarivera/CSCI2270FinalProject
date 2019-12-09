@@ -246,7 +246,7 @@ int main(int argc, char* argv[]) {
 	// class for linked list implementation
 	hashLL ll;
 	// class for BST implementation
-	hashBST bst;
+	hashBST bst(hashChoice);
 
 	// initialize variables for user input
 	int mainChoice;
@@ -322,14 +322,14 @@ int main(int argc, char* argv[]) {
 				cout << "failed to open file" << endl << "\n";
 
 			//int i = 0;
-			while (file.good()) {
+			/*while (file.good()) {
 				getline(file, tmpNum, ',');
 				num = stoi(tmpNum);
 				// insert into hash table
 				//i++;
 				//cout << "inserting: " << i << "th element" << endl;
-				bst.insertBST(num, hashChoice);
-			}
+				bst.insertBST(num);
+			}*/
 			cout << "done populating hash table" << endl << "\n";
 
 			// hash table is now populated, ask user for action
@@ -342,25 +342,28 @@ int main(int argc, char* argv[]) {
 					cout << "Enter value to insert into hash table: " << endl;
 					cout << ">> ";
 					cin >> toInsert;
-					bst.insertBST(toInsert, hashChoice);
+					bst.insertBST(toInsert);
 				}
 				// lookup entry
 				else if (actionChoice == 2) {
 					cout << "Enter value to lookup" << endl;
 					cout << ">> ";
 					cin >> toLookup;
-					int hashKey = bst.hashCalcBST(toLookup, hashChoice);
-					bst.lookupBST(toLookup, hashKey);
-					bst.lookupBST(toLookup, hashKey);
+					if (bst.lookupBST(toLookup)) {
+						cout << endl <<"lookup successful!" << endl;
+					}
+					else {
+						cout << "lookup failure :(" << endl;
+					}
 				}
 				// delete entry
 				else if (actionChoice == 3) {
 					cout << "Enter value to delete" << endl;
 					cout << ">> ";
 					cin >> toDelete;
-					int hashKey = bst.hashCalcBST(toDelete, hashChoice);
+					int hashKey = bst.hashCalcBST(toDelete);
 					cout << "value of node input into delete function" << bst.table[hashKey]->root->val << endl;
-					bst.deleteBST(bst.table[hashKey]->root, toDelete);
+					bst.deleteBST(toDelete);
 				}
 				else if (actionChoice == 4) {
 					quit++;
