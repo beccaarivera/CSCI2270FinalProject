@@ -31,8 +31,8 @@ bool hashBST::isEmptyBST(int key) {
     return false;
 }
 
-void hashBST::insertBST(int value, int choice) {
-  int key = hashCalcBST(value, choice);
+void hashBST::insertBST(int value, int key) {
+  //int key = hashCalcBST(value, choice);
   // create BST node with value val
   treeNode* node = new treeNode;
   node->val = value;
@@ -53,6 +53,9 @@ void hashBST::insertBST(int value, int choice) {
       // value is smaller
       else if (value < pres->val)
         pres = pres->left;
+      // if duplicate found
+      else if (value == pres->val)
+        return;
     }
     // once at leaf node, insert new node
     if (node->val > prev->val){
@@ -66,8 +69,8 @@ void hashBST::insertBST(int value, int choice) {
   }
 }
 
-void hashBST::lookupBST(int value, int choice) {
-  int key = hashCalcBST(value, choice);
+void hashBST::lookupBST(int value, int key) {
+  //int key = hashCalcBST(value, choice);
   // check if tree is empty at hash location
   if (isEmptyBST(key)) {
     cout << "tree empty at this location, not found" << endl << "\n";
@@ -105,7 +108,50 @@ treeNode* hashBST::getMinValueNode(treeNode* pres) {
   return getMinValueNode(pres->left);
 }
 
-treeNode* hashBST::deleteHelper(treeNode* pres) {
+treeNode* hashBST::deleteBST(treeNode* pres, int value) {
+  if (pres == NULL){
+    return NULL;
+  }
+  else if (value < pres->val) {
+    pres->left = deleteBST(pres->left, value);
+  }
+  else if (value > pres->val) {
+    pres->right = deleteBST(pres->right, value);
+  }
+  else{
+    // found node to delete
+    // no children
+    if (pres->left == NULL && pres->right == NULL) {
+      cout << "deleting: " << pres->val << endl << "\n";
+      delete pres;
+      return NULL;
+    }
+    // only right child
+    else if (pres->left == NULL) {
+      treeNode* tmp = pres;
+      pres = pres->right;
+      cout << "deleting: " << tmp->val << endl << "\n";
+      delete tmp;
+    }
+    // only left child
+    else if (pres->right == NULL) {
+      treeNode* tmp = pres;
+      pres = pres->left;
+      cout << "deleting: " << tmp->val << endl << "\n";
+      delete tmp;
+    }
+    // two children
+    else {
+      treeNode* tmp = pres;
+      treeNode* min = getMinValueNode(pres->right);
+      pres->val = min->val;
+      pres->right = deleteBST(pres->right, min->val);
+    }
+  }
+  return pres;
+}
+
+/*treeNode* hashBST::deleteHelper(treeNode* pres) {
   // delete leaf
   if (pres->left && pres->right == NULL) {
     delete pres;
@@ -151,7 +197,9 @@ void hashBST::deleteBST(int value, int choice) {
   }
   // traverse tree to find node to delete
   treeNode* pres = table[key]->root;
+  //treeNode* par = NULL;
   while (pres->val != value){
+    //par = pres;
     // value is larger
     if (value > pres->val && pres->right != NULL)
       pres = pres->right;
@@ -169,6 +217,7 @@ void hashBST::deleteBST(int value, int choice) {
   //cout << "debug" << endl;
   //
   if (par == NULL) {
+    cout << "par=NULL" << endl;
     table[key]->root = deleteHelper(pres);
     cout << "debug" << endl;
   }
@@ -176,4 +225,4 @@ void hashBST::deleteBST(int value, int choice) {
     par->left = deleteHelper(pres);
   else
     par->right = deleteHelper(pres);
-}
+}*/

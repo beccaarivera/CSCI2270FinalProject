@@ -89,7 +89,7 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 		cout << hashTable.numEntries() << endl;
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
-		toDelete[counter % 100] = num; 
+		toDelete[counter % 100] = num;
 		hashTable.insert(num);
 		counter++;
 	}
@@ -242,13 +242,17 @@ int main(int argc, char* argv[]) {
 					cout << "Enter value to lookup" << endl;
 					cout << ">> ";
 					cin >> toLookup;
-					bst.lookupBST(toLookup, hashChoice);
+					int hashKey = bst.hashCalcBST(toLookup, hashChoice);
+					bst.lookupBST(toLookup, hashKey);
 				}
+				// delete entry
 				else if (actionChoice == 3) {
 					cout << "Enter value to delete" << endl;
 					cout << ">> ";
 					cin >> toDelete;
-					bst.deleteBST(toDelete, hashChoice);
+					int hashKey = bst.hashCalcBST(toDelete, hashChoice);
+					cout << "value of node input into delete function" << bst.table[hashKey]->root->val << endl;
+					bst.deleteBST(bst.table[hashKey]->root, toDelete);
 				}
 				else if (actionChoice == 4) {
 					quit++;
