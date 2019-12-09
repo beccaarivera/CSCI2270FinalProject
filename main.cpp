@@ -83,14 +83,13 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 
 	//get load factor to desired value
 	int counter = 0;
-	while (((double)counter) < 2 * loadFactor * ((double)tablesize)) { //we multiply table size by 2 to account for both sides
+	while (hashTable.numEntries() < 2 * loadFactor * ((double)tablesize)) { //we multiply table size by 2 to account for both sides
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
 		toDelete[counter % 100] = num;
 		hashTable.insert(num);
 		counter++;
 	}
-	cout << counter << " numbers inserted to bring load factor to " << loadFactor << endl;
 
 	auto t1 = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < 100; i++) {
@@ -235,22 +234,19 @@ int main() {
 			// cuckoo hashing
 		}
 		else if (mainChoice == 4) {
-			// uses both hash functions by definition
+			//int tablesize = 5;
 			int tablesize = 10009;
 			CuckooHashing hashTable(tablesize);
+
 			string filename = "dataSetA.csv";
 			testCuckooHashing(hashTable, tablesize, filename, 0.1);
-			hashTable.clearTables();
 
 			testCuckooHashing(hashTable, tablesize, filename, 0.2);
-			hashTable.clearTables();
 
 			testCuckooHashing(hashTable, tablesize, filename, 0.5);
-			hashTable.clearTables();
 
 			testCuckooHashing(hashTable, tablesize, filename, 0.7);
-			hashTable.clearTables();
-
+			
 			testCuckooHashing(hashTable, tablesize, filename, 1);
 		}
 		else if (mainChoice == 5) {
@@ -268,23 +264,4 @@ int main() {
 
 //cuckoo hashing test
 /*
-			int tablesize = 5;
-			//fill up the table
-			for (int i = 0; i < tablesize; i++) {
-				hashTable.insert(i);
-				hashTable.insert(i * tablesize + i);
-			}
-
-			//cause rehash
-			hashTable.insert(tablesize*tablesize+tablesize);
-			hashTable.countRehashes();
-
-			hashTable.printValues();
-
-			cout << "Deleting all values except " << tablesize*tablesize+tablesize << endl;
-			for (int i = 0; i < tablesize; i++) {
-				hashTable.deleteValue(i);
-				hashTable.deleteValue(i * tablesize + i);
-			}
-			hashTable.printValues();
-			hashTable.lookup(tablesize * tablesize + tablesize);*/
+			*/

@@ -20,7 +20,7 @@ bool isPrime(int N) {
 
 CuckooHashing::CuckooHashing(int tablesize) {
 	TABLE_SIZE = tablesize;
-	TABLE_SIZE_INCREMENT = 1000;
+	TABLE_SIZE_INCREMENT =(int) (((double) TABLE_SIZE)*0.1);
 	rehashCounter = 0;
 	hashTable1 = new CuckooBin * [TABLE_SIZE];
 	hashTable2 = new CuckooBin * [TABLE_SIZE];
@@ -28,6 +28,18 @@ CuckooHashing::CuckooHashing(int tablesize) {
 		hashTable1[i] = NULL;
 		hashTable2[i] = NULL;
 	}
+}
+int CuckooHashing::numEntries() {
+	int toReturn = 0;
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (hashTable1[i] != NULL) {
+			toReturn++;
+		}
+		if (hashTable2[i] != NULL) {
+			toReturn++;
+		}
+	}
+	return toReturn;
 }
 
 void CuckooHashing::clearTables() {
@@ -44,7 +56,6 @@ void CuckooHashing::clearTables() {
 }
 
 CuckooHashing::~CuckooHashing() {
-	cout << "deleting" << endl;
 	deleteTables();
 }
 
@@ -61,6 +72,16 @@ int CuckooHashing::hashFunc2(int toHash) {
 bool CuckooHashing::insertHelper(int toInsert) {
 	int address1 = hashFunc1(toInsert);
 	int address2 = hashFunc2(toInsert);
+
+
+	//cannot insert existing number
+	if (hashTable1[address1] != NULL && hashTable1[address1]->value == toInsert) {
+		return true;
+	}
+	if (hashTable2[address2] != NULL && hashTable2[address2]->value == toInsert) {
+		return true;
+	}
+
 	if (hashTable1[address1] == NULL) {
 		//we can put the value into the first hash table without collision
 		hashTable1[address1] = new CuckooBin(toInsert, false);
@@ -147,7 +168,8 @@ void CuckooHashing::rehash(int toInsert) {
 		toContinue = false;
 
 		//increment table size by 2 (since evens aren't prime) until we reach another prime
-		TABLE_SIZE = TABLE_SIZE + TABLE_SIZE_INCREMENT;
+		TABLE_SIZE+=TABLE_SIZE_INCREMENT;
+		
 		if (TABLE_SIZE % 2 == 0) {
 			TABLE_SIZE++;
 		}

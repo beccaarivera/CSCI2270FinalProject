@@ -19,6 +19,7 @@ public:
 	void countRehashes();
 	void printValues();
 	void clearTables();
+	int numEntries();
 
 private:
 	int TABLE_SIZE;
