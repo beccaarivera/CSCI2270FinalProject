@@ -85,14 +85,14 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 
 	//get load factor to desired value
 	int counter = 0;
-	while (((double)counter) < 2 * loadFactor * ((double)tablesize)) { //we multiply table size by 2 to account for both sides
+	while (hashTable.numEntries() < 2 * loadFactor * ((double)tablesize)) { //we multiply table size by 2 to account for both sides
+		cout << hashTable.numEntries() << endl;
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
-		toDelete[counter % 100] = num;
+		toDelete[counter % 100] = num; 
 		hashTable.insert(num);
 		counter++;
 	}
-	cout << counter << " numbers inserted to bring load factor to " << loadFactor << endl;
 
 	auto t1 = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < 100; i++) {
@@ -137,12 +137,12 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 	// class for linked list implementation
-  hashLL ll;
+	hashLL ll;
 	// class for BST implementation
-  hashBST bst;
+	hashBST bst;
 
 	// initialize variables for user input
-  int mainChoice;
+	int mainChoice;
 	int actionChoice;
 	int toInsert;
 	int toLookup;
@@ -163,8 +163,8 @@ int main(int argc, char* argv[]) {
 				cout << "failed to open file" << endl << "\n";
 
 			//int i = 0;
-			while (file.good()){
-				getline(file,tmpNum,',');
+			while (file.good()) {
+				getline(file, tmpNum, ',');
 				num = stoi(tmpNum);
 				// insert into hash table
 				//i++;
@@ -215,8 +215,8 @@ int main(int argc, char* argv[]) {
 				cout << "failed to open file" << endl << "\n";
 
 			//int i = 0;
-			while (file.good()){
-				getline(file,tmpNum,',');
+			while (file.good()) {
+				getline(file, tmpNum, ',');
 				num = stoi(tmpNum);
 				// insert into hash table
 				//i++;
@@ -261,11 +261,9 @@ int main(int argc, char* argv[]) {
 		else if (mainChoice == 3) {
 			// prompt user to choose hash function to implement
 
-			int tablesize = 10009;
+			int tablesize = 1019;
 			while (true) {
-				cin >> hashChoice;
 				if (hashChoice == 1) {
-					string filename = "dataSetA.csv";
 					LinearProbing hashTable = LinearProbing(1, tablesize);
 					testLinearProbing(hashTable, tablesize, filename, 0.1);
 					hashTable.clearTable();
@@ -283,7 +281,6 @@ int main(int argc, char* argv[]) {
 					break;
 				}
 				else if (hashChoice == 2) {
-					string filename = "dataSetA.csv";
 					LinearProbing hashTable = LinearProbing(2, tablesize);
 					testLinearProbing(hashTable, tablesize, filename, 0.1);
 					hashTable.clearTable();
@@ -308,21 +305,17 @@ int main(int argc, char* argv[]) {
 			// cuckoo hashing
 		}
 		else if (mainChoice == 4) {
-			// uses both hash functions by definition
+			//int tablesize = 5;
 			int tablesize = 10009;
 			CuckooHashing hashTable(tablesize);
-			string filename = "dataSetA.csv";
+
 			testCuckooHashing(hashTable, tablesize, filename, 0.1);
-			hashTable.clearTables();
 
 			testCuckooHashing(hashTable, tablesize, filename, 0.2);
-			hashTable.clearTables();
 
 			testCuckooHashing(hashTable, tablesize, filename, 0.5);
-			hashTable.clearTables();
 
 			testCuckooHashing(hashTable, tablesize, filename, 0.7);
-			hashTable.clearTables();
 
 			testCuckooHashing(hashTable, tablesize, filename, 1);
 		}
