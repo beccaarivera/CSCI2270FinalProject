@@ -27,6 +27,106 @@ void actionMenu() {
 	cout << "4. Quit linked list implementation" << endl;
 }
 
+void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename, double loadFactor) {
+	int num;
+	string tmpNum;
+	ifstream file(filename);
+
+	int toDelete[100];
+
+	int counter = 0;
+	while (hashTable.loadFactor() < loadFactor) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[counter % 100] = num;
+		hashTable.insert(num);
+		counter++;
+	}
+	cout << counter << " numbers inserted to bring load factor to " << loadFactor << endl;
+
+	auto t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		hashTable.deleteValue(toDelete[i]);
+	}
+	auto t2 = std::chrono::high_resolution_clock::now();
+	auto durationDelete = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+	t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[i] = num;
+		hashTable.insert(num);
+	}
+	t2 = std::chrono::high_resolution_clock::now();
+	auto durationInsert = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+
+	t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		hashTable.lookup(toDelete[i]);
+	}
+	t2 = std::chrono::high_resolution_clock::now();
+	auto durationLookup = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+	cout << "Linear probing at load factor " << loadFactor << ":" << endl;
+	cout << "Delete 100 numbers: " << durationDelete << " microseconds." << endl;
+	cout << "Insert 100 numbers: " << durationInsert << " microseconds." << endl;
+	cout << "Lookup 100 numbers: " << durationLookup << " microseconds." << endl;
+	cout << endl;
+}
+
+void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename, double loadFactor) {
+	int num;
+	string tmpNum;
+	ifstream file(filename);
+
+	int toDelete[100];
+
+	//get load factor to desired value
+	int counter = 0;
+	while (((double)counter) < 2 * loadFactor * ((double)tablesize)) { //we multiply table size by 2 to account for both sides
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[counter % 100] = num;
+		hashTable.insert(num);
+		counter++;
+	}
+	cout << counter << " numbers inserted to bring load factor to " << loadFactor << endl;
+
+	auto t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		hashTable.deleteValue(toDelete[i]);
+	}
+	auto t2 = std::chrono::high_resolution_clock::now();
+	auto durationDelete = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+	t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[i] = num;
+		hashTable.insert(num);
+	}
+	t2 = std::chrono::high_resolution_clock::now();
+	auto durationInsert = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+
+	t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 100; i++) {
+		hashTable.lookup(toDelete[i]);
+	}
+	t2 = std::chrono::high_resolution_clock::now();
+	auto durationLookup = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+
+	cout << "Cuckoo hashing at load factor " << loadFactor << ":" << endl;
+	cout << "Delete 100 numbers: " << durationDelete << " microseconds." << endl;
+	cout << "Insert 100 numbers: " << durationInsert << " microseconds." << endl;
+	cout << "Lookup 100 numbers: " << durationLookup << " microseconds." << endl;
+	hashTable.countRehashes();
+	cout << endl;
+}
+
 int main(int argc, char* argv[]) {
 	// command line args
 	string filename = argv[1];
@@ -160,20 +260,44 @@ int main(int argc, char* argv[]) {
 		// linear probing
 		else if (mainChoice == 3) {
 			// prompt user to choose hash function to implement
-			//hashMenu();
+
+			int tablesize = 10009;
 			while (true) {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
-					LinearProbing hashTable = LinearProbing(1);
-					string toAdd;
-					//while (getline(csvfile, toAdd,',')) {
-						//hashTable.insert(stoi(toAdd));
-					//}
+					string filename = "dataSetA.csv";
+					LinearProbing hashTable = LinearProbing(1, tablesize);
+					testLinearProbing(hashTable, tablesize, filename, 0.1);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, filename, 0.2);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, filename, 0.5);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, filename, 0.7);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, filename, 1);
 					break;
 				}
 				else if (hashChoice == 2) {
-					LinearProbing hashTable = LinearProbing(2);
+					string filename = "dataSetA.csv";
+					LinearProbing hashTable = LinearProbing(2, tablesize);
+					testLinearProbing(hashTable, tablesize, filename, 0.1);
+					hashTable.clearTable();
 
+					testLinearProbing(hashTable, tablesize, filename, 0.2);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, filename, 0.5);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, filename, 0.7);
+					hashTable.clearTable();
+
+					testLinearProbing(hashTable, tablesize, filename, 1);
 					break;
 				}
 				else {
@@ -185,31 +309,22 @@ int main(int argc, char* argv[]) {
 		}
 		else if (mainChoice == 4) {
 			// uses both hash functions by definition
-			CuckooHashing hashTable;
+			int tablesize = 10009;
+			CuckooHashing hashTable(tablesize);
+			string filename = "dataSetA.csv";
+			testCuckooHashing(hashTable, tablesize, filename, 0.1);
+			hashTable.clearTables();
 
-			//fill up the table
-			for (int i = 0; i < 1019; i++) {
-				hashTable.insert(i);
-				hashTable.insert(i * 1019 + i);
-			}
+			testCuckooHashing(hashTable, tablesize, filename, 0.2);
+			hashTable.clearTables();
 
-			//cause rehash
-			hashTable.insert(1020);
-			hashTable.countRehashes();
+			testCuckooHashing(hashTable, tablesize, filename, 0.5);
+			hashTable.clearTables();
 
-			for (int i = 0; i < 1019; i++) {
-				if (!hashTable.lookup(i)) {
-					cout << "Failure :(" << endl;
-					break;
-				}
-				if (!hashTable.lookup(i * 1019 + i)) {
-					cout << "Failure :(" << endl;
-					break;
-				}
-			}
-			if (!hashTable.lookup(1020)) {
-				cout << "Failure :(" << endl;
-			}
+			testCuckooHashing(hashTable, tablesize, filename, 0.7);
+			hashTable.clearTables();
+
+			testCuckooHashing(hashTable, tablesize, filename, 1);
 		}
 		else if (mainChoice == 5) {
 			cout << "Quitting..." << endl;
@@ -220,3 +335,29 @@ int main(int argc, char* argv[]) {
 		}
 	}
 }
+
+
+
+
+//cuckoo hashing test
+/*
+			int tablesize = 5;
+			//fill up the table
+			for (int i = 0; i < tablesize; i++) {
+				hashTable.insert(i);
+				hashTable.insert(i * tablesize + i);
+			}
+
+			//cause rehash
+			hashTable.insert(tablesize*tablesize+tablesize);
+			hashTable.countRehashes();
+
+			hashTable.printValues();
+
+			cout << "Deleting all values except " << tablesize*tablesize+tablesize << endl;
+			for (int i = 0; i < tablesize; i++) {
+				hashTable.deleteValue(i);
+				hashTable.deleteValue(i * tablesize + i);
+			}
+			hashTable.printValues();
+			hashTable.lookup(tablesize * tablesize + tablesize);*/
