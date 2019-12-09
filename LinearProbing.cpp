@@ -3,8 +3,8 @@
 #include "math.h"
 using namespace std;
 
-LinearProbing::LinearProbing(int hashFunction) {
-	TABLE_SIZE = 10009;
+LinearProbing::LinearProbing(int hashFunction, int tablesize) {
+	TABLE_SIZE = tablesize;
 	hashFunc = hashFunction;
 	hashTable = new int* [TABLE_SIZE];
 	for (int i = 0; i < TABLE_SIZE; i++) {

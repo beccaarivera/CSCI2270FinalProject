@@ -14,7 +14,7 @@ public:
 	void insert(int toInsert);
 	void deleteValue(int toDelete);
 	bool lookup(int toLookup);
-	CuckooHashing();
+	CuckooHashing(int tablesize);
 	~CuckooHashing();
 	void countRehashes();
 	void printValues();

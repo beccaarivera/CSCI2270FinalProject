@@ -7,7 +7,7 @@ public:
 	void deleteValue(int toDelete);
 	void lookup(int toLookup);
 	double loadFactor();
-	LinearProbing(int hashFunction);
+	LinearProbing(int hashFunction, int tablesize);
 	~LinearProbing();
 	void clearTable();
 private:

@@ -3,9 +3,24 @@
 #include <math.h>
 using namespace std;
 
-CuckooHashing::CuckooHashing() {
-	TABLE_SIZE = 10009;
-	TABLE_SIZE_INCREMENT = 10;
+//checks if an odd number is prime
+bool isPrime(int N) {
+	if (N % 2 == 0) {
+		return false;
+	}
+
+	//now check if i is divisible by every odd number
+	for (int i = 3; i < ((double)N) / 2; i += 2) {
+		if (N % i == 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+CuckooHashing::CuckooHashing(int tablesize) {
+	TABLE_SIZE = tablesize;
+	TABLE_SIZE_INCREMENT = 1000;
 	rehashCounter = 0;
 	hashTable1 = new CuckooBin * [TABLE_SIZE];
 	hashTable2 = new CuckooBin * [TABLE_SIZE];
@@ -29,6 +44,7 @@ void CuckooHashing::clearTables() {
 }
 
 CuckooHashing::~CuckooHashing() {
+	cout << "deleting" << endl;
 	deleteTables();
 }
 
@@ -67,6 +83,7 @@ bool CuckooHashing::insertHelper(int toInsert) {
 	}
 	else {
 		//rehash :(
+		//cout << "Failed inserting " << toInsert << ", rehashing..." << endl;
 		return false;
 	}
 	return true;
@@ -121,16 +138,24 @@ bool CuckooHashing::lookup(int toLookup) {
 }
 
 void CuckooHashing::rehash(int toInsert) {
-	//cout << "Rehashing..." << endl;
 	CuckooBin** hashTable1Old = hashTable1;
 	CuckooBin** hashTable2Old = hashTable2;
 	int originalSize = TABLE_SIZE;
 	bool toContinue;
 
 	while (true) {
-		//cout << "Incrementing table size" << endl;
 		toContinue = false;
-		TABLE_SIZE+=TABLE_SIZE_INCREMENT;
+
+		//increment table size by 2 (since evens aren't prime) until we reach another prime
+		TABLE_SIZE = TABLE_SIZE + TABLE_SIZE_INCREMENT;
+		if (TABLE_SIZE % 2 == 0) {
+			TABLE_SIZE++;
+		}
+		while (!isPrime(TABLE_SIZE)) {
+			TABLE_SIZE += 2;
+		}
+		//cout << "Rehashing to size " << TABLE_SIZE << endl;
+
 		rehashCounter++;
 
 		hashTable1 = new CuckooBin * [TABLE_SIZE];
@@ -145,14 +170,14 @@ void CuckooHashing::rehash(int toInsert) {
 
 		for (int i = 0; i < originalSize; i++) {
 			if (hashTable1Old[i] != NULL) {
-				if (!insertHelper(hashTable1Old[i]->value)) {
+				if (!(insertHelper(hashTable1Old[i]->value))) {
 					//we need to up the table size, this size will not work
 					toContinue = true;
 					break;
 				}
 			}
 			if (hashTable2Old[i] != NULL) {
-				if (!insertHelper(hashTable2Old[i]->value)) {
+				if (!(insertHelper(hashTable2Old[i]->value))) {
 					//we need to up the table size, this size will not work
 					toContinue = true;
 					break;
