@@ -107,8 +107,8 @@ void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename,
 
 	cout << "Linear probing at load factor " << loadFactor << ":" << endl;
 	cout << "Average delete time: " << deleteMean << " microseconds with " << delete_stddev << " microseconds standard deviation ." << endl;
-	cout << "Average delete time: " << insertMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
-	cout << "Average delete time: " << lookupMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average insert time: " << insertMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average lookup time: " << lookupMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
 	cout << endl;
 }
 
@@ -205,8 +205,8 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 
 	cout << "Cuckoo hashing at load factor " << loadFactor << ":" << endl;
 	cout << "Average delete time: " << deleteMean << " microseconds with " << delete_stddev << " microseconds standard deviation ." << endl;
-	cout << "Average delete time: " << insertMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
-	cout << "Average delete time: " << lookupMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average insert time: " << insertMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average lookup time: " << lookupMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
 	hashTable.countRehashes();
 	cout << endl;
 }
