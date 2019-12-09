@@ -7,11 +7,31 @@ using namespace std;
 
 /* constructor for hash table
    initializes all indices to NULL */
-hashLL::hashLL() {
-  table = new tableNodeLL* [TABLE_SIZE];
-  for (int i = 0; i < TABLE_SIZE; i++) {
-    table[i] = new tableNodeLL;
-  }
+hashLL::hashLL(int tablesize) {
+	TABLE_SIZE = tablesize;
+	table = new tableNodeLL* [TABLE_SIZE];
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		table[i] = new tableNodeLL;
+	}
+}
+
+double hashLL::loadFactorLL() {
+	int numFilled = 0;
+  //cout << "numfilled: " << numFilled << endl;
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (table[i]->head != NULL) {
+			numFilled++;
+		}
+	}
+}
+
+void hashLL::clearTableLL() {
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (table[i] != NULL) {
+			delete table[i];
+			table[i] = NULL;
+		}
+	}
 }
 
 int hashLL::hashCalcLL(int value, int choice) {

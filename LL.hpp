@@ -23,7 +23,9 @@ struct tableNodeLL {
 
 class hashLL {
   public:
-    hashLL();
+    hashLL(int tablesize);
+    void clearTableLL();
+    double loadFactorLL();
     int hashCalcLL(int value, int choice);
     bool isEmptyLL(int key);
     void insertLL(int value, int choice);
@@ -31,5 +33,5 @@ class hashLL {
     void deleteLL(int value, int choice);
   private:
     tableNodeLL** table;
-    int TABLE_SIZE = 10009;
+    int TABLE_SIZE;
 };

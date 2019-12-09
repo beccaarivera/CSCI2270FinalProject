@@ -6,12 +6,21 @@ using namespace std;
 
 /* constructor for hash table
    initializes all indices to NULL */
-hashBST::hashBST() {
+hashBST::hashBST(int tablesize) {
+  TABLE_SIZE = tablesize;
   table = new tableNodeBST* [TABLE_SIZE];
   for (int i = 0; i < TABLE_SIZE; i++) {
     table[i] = new tableNodeBST;
   }
 }
+
+double LinearProbingBST::loadFactorBST() {
+	int numFilled = 0;
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		if (table[i]->root != NULL) {
+			numFilled++;
+		}
+	}
 
 int hashBST::hashCalcBST(int value, int choice) {
   // apply hash function

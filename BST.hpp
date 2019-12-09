@@ -19,7 +19,9 @@ struct tableNodeBST {
 class hashBST {
   public:
     tableNodeBST** table;
-    hashBST();
+    hashBST(int tablesize);
+    void clearTableBST();
+    double loadFactorBST();
     int hashCalcBST(int value, int choice);
     bool isEmptyBST(int key);
     void insertBST(int value, int key);
@@ -29,5 +31,5 @@ class hashBST {
     //treeNode* deleteHelper(treeNode* pres);
     treeNode* getMinValueNode(treeNode* pres);
   private:
-    int TABLE_SIZE = 10009;
+    int TABLE_SIZE;
 };

@@ -7,6 +7,7 @@
 #include <chrono>
 #include "LL.hpp"
 #include "BST.hpp"
+#include "math.h"
 
 using namespace std;
 
@@ -26,6 +27,182 @@ void actionMenu() {
 	cout << "3. Delete entry" << endl;
 	cout << "4. Quit linked list implementation" << endl;
 }
+
+void testLL(hashLL& table, int tablesize, string filename, double loadFactor, int hashChoice) {
+	int num;
+	string tmpNum;
+	ifstream file(filename);
+
+	int toDelete[100];
+	int times[100];
+
+	int counter = 0;
+	//cout << "counter = " << counter << endl;
+	//cout << "load factor: " << table.loadFactor() << endl;
+	while (table.loadFactorLL() < loadFactor) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[counter % 100] = num;
+		table.insertLL(num, hashChoice);
+		counter++;
+		//cout << counter << endl;
+	}
+	cout << counter << " numbers inserted to bring load factor to " << loadFactor << endl;
+
+	for (int i = 0; i < 100; i++) {
+		auto t1 = std::chrono::high_resolution_clock::now();
+		table.deleteLL(toDelete[i], hashChoice);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double deleteMean = 0;
+	double delete_stddev = 0;
+	int totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	deleteMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		delete_stddev += pow(((double)times[i]) - deleteMean,2);
+	}
+	delete_stddev /= 100;
+
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[i] = num;
+		auto t1 = std::chrono::high_resolution_clock::now();
+		table.insertLL(num, hashChoice);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double insertMean = 0;
+	double insert_stddev = 0;
+	totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	insertMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		insert_stddev += pow(((double)times[i]) - deleteMean, 2);
+	}
+	insert_stddev /= 100;
+
+	for (int i = 0; i < 100; i++) {
+		auto t1 = std::chrono::high_resolution_clock::now();
+		table.lookupLL(toDelete[i], hashChoice);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double lookupMean = 0;
+	double lookup_stddev = 0;
+	totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	lookupMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		lookup_stddev += pow(((double)times[i]) - deleteMean, 2);
+	}
+	lookup_stddev /= 100;
+
+	cout << "Linear probing at load factor " << loadFactor << ":" << endl;
+	cout << "Average delete time: " << deleteMean << " microseconds with " << delete_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average insert time: " << insertMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average lookup time: " << lookupMean << " microseconds with " << lookup_stddev << " microseconds standard deviation ." << endl;
+	cout << endl;
+}
+
+
+void testBST(hashBST& table, int tablesize, string filename, double loadFactor, int hashChoice) {
+	int num;
+	string tmpNum;
+	ifstream file(filename);
+
+	int toDelete[100];
+	int times[100];
+
+	int counter = 0;
+	while (table.loadFactorBST() < loadFactor) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[counter % 100] = num;
+		table.insertBST(num, hashChoice);
+		counter++;
+		//cout << counter << endl;
+	}
+	cout << counter << " numbers inserted to bring load factor to " << loadFactor << endl;
+
+	for (int i = 0; i < 100; i++) {
+		auto t1 = std::chrono::high_resolution_clock::now();
+		table.deleteBST(toDelete[i], hashChoice);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double deleteMean = 0;
+	double delete_stddev = 0;
+	int totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	deleteMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		delete_stddev += pow(((double)times[i]) - deleteMean,2);
+	}
+	delete_stddev /= 100;
+
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[i] = num;
+		auto t1 = std::chrono::high_resolution_clock::now();
+		table.insertBST(num, hashChoice);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double insertMean = 0;
+	double insert_stddev = 0;
+	totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	insertMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		insert_stddev += pow(((double)times[i]) - deleteMean, 2);
+	}
+	insert_stddev /= 100;
+
+	for (int i = 0; i < 100; i++) {
+		auto t1 = std::chrono::high_resolution_clock::now();
+		table.lookupBST(toDelete[i], hashChoice);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double lookupMean = 0;
+	double lookup_stddev = 0;
+	totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	lookupMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		lookup_stddev += pow(((double)times[i]) - deleteMean, 2);
+	}
+	lookup_stddev /= 100;
+
+	cout << "Linear probing at load factor " << loadFactor << ":" << endl;
+	cout << "Average delete time: " << deleteMean << " microseconds with " << delete_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average insert time: " << insertMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average lookup time: " << lookupMean << " microseconds with " << lookup_stddev << " microseconds standard deviation ." << endl;
+	cout << endl;
+}
+
 
 void testLinearProbing(LinearProbing& hashTable, int tablesize, string filename, double loadFactor) {
 	int num;
@@ -221,7 +398,7 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 	// class for linked list implementation
-	hashLL ll;
+	//hashLL ll;
 	// class for BST implementation
 	hashBST bst;
 
@@ -239,7 +416,7 @@ int main(int argc, char* argv[]) {
 
 		// chaining with linked list
 		if (mainChoice == 1) {
-			// read csv file
+		/*	// read csv file
 			int num;
 			string tmpNum;
 			ifstream file(filename);
@@ -285,7 +462,24 @@ int main(int argc, char* argv[]) {
 				else if (actionChoice == 4) {
 					quit++;
 					cout << "quitting action menu" << endl << "\n";
-				}
+				}*/
+				int tablesize = 10009;
+				while (true) {
+					hashLL table = hashLL(tablesize);
+					testLL(table, tablesize, filename, 0.1, hashChoice);
+					table.clearTableLL();
+
+					testLL(table, tablesize, filename, 0.2, hashChoice);
+					table.clearTableLL();
+
+					testLL(table, tablesize, filename, 0.5, hashChoice);
+					table.clearTableLL();
+
+					testLL(table, tablesize, filename, 0.7, hashChoice);
+					table.clearTableLL();
+
+					testLL(table, tablesize, filename, 1, hashChoice);
+					break;
 			}
 		}
 
@@ -347,8 +541,6 @@ int main(int argc, char* argv[]) {
 
 		// linear probing
 		else if (mainChoice == 3) {
-			// prompt user to choose hash function to implement
-
 			int tablesize = 10009;
 			while (true) {
 				if (hashChoice == 1) {
@@ -390,8 +582,8 @@ int main(int argc, char* argv[]) {
 					//hashMenu();
 				}
 			}
-			// cuckoo hashing
 		}
+		// cuckoo hashing
 		else if (mainChoice == 4) {
 			//int tablesize = 5;
 			int tablesize = 10009;
