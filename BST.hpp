@@ -17,19 +17,22 @@ struct tableNodeBST {
 };
 
 class hashBST {
-  public:
-    tableNodeBST** table;
-    hashBST(int tablesize);
-    void clearTableBST();
-    double loadFactorBST();
-    int hashCalcBST(int value, int choice);
-    bool isEmptyBST(int key);
-    void insertBST(int value, int key);
-    void lookupBST(int value, int key);
-    treeNode* deleteBST(treeNode* pres, int value);
-    //void deleteBST(int value, int choice);
-    //treeNode* deleteHelper(treeNode* pres);
-    treeNode* getMinValueNode(treeNode* pres);
-  private:
-    int TABLE_SIZE;
+public:
+	hashBST(int hChoice);
+	tableNodeBST** table;
+	int hashCalcBST(int value);
+	bool isEmptyBST(int key);
+	void insertBST(int value);
+	bool lookupBST(int value);
+	void deleteBST(int value);
+	//void deleteBST(int value, int choice);
+	//treeNode* deleteHelper(treeNode* pres);
+	treeNode* getMinValueNode(treeNode* pres);
+	void clearTable();
+private:
+	bool lookupBSTHelper(int value, treeNode* root);
+	treeNode* insertBSTHelper(treeNode* currNode, int data);
+	treeNode* deleteBSTHelper(treeNode* pres, int value);
+	int TABLE_SIZE = 10009;
+	int choice;
 };

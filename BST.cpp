@@ -64,6 +64,21 @@ bool hashBST::lookupBST(int value) {
 	return lookupBSTHelper(value, table[hashCalcBST(value)]->root);
 }
 
+void deleteTree(treeNode* root) {
+	if (root == NULL) {
+		return;
+	}
+	deleteTree(root->left);
+	deleteTree(root->right);
+	delete root;
+}
+void hashBST::clearTable() {
+	for (int i = 0; i < TABLE_SIZE; i++) {
+		deleteTree(table[i]->root);
+		table[i]->root = NULL;
+	}
+}
+
 bool hashBST::lookupBSTHelper(int value, treeNode* currNode) {
 	if (currNode == NULL)
 		return false;
@@ -72,11 +87,9 @@ bool hashBST::lookupBSTHelper(int value, treeNode* currNode) {
 		return true;
 
 	if (currNode->val > value) {
-		cout << "Looking left" << endl;
 		return lookupBSTHelper(value, currNode->left);
 	}
 
-	cout << "looking right" << endl;
 	return lookupBSTHelper(value, currNode->right);
 }
 
