@@ -118,6 +118,7 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 	ifstream file(filename);
 
 	int toDelete[100];
+	int times[100];
 
 	//get load factor to desired value
 	int counter = 0;
@@ -136,35 +137,76 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 
 	}
 
-	auto t1 = std::chrono::high_resolution_clock::now();
 	for (int i = 0; i < 100; i++) {
-		hashTable.deleteValue(toDelete[i]);
-	}
-	auto t2 = std::chrono::high_resolution_clock::now();
-	auto durationDelete = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
-	t1 = std::chrono::high_resolution_clock::now();
+		auto t1 = std::chrono::high_resolution_clock::now();
+		hashTable.deleteValue(toDelete[i]);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double deleteMean = 0;
+	double delete_stddev = 0;
+
+	int totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	deleteMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		delete_stddev += pow(((double)times[i]) - deleteMean, 2);
+	}
+	delete_stddev /= 100;
+
+
+
 	for (int i = 0; i < 100; i++) {
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
 		toDelete[i] = num;
+
+		auto t1 = std::chrono::high_resolution_clock::now();
 		hashTable.insert(num);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 	}
-	t2 = std::chrono::high_resolution_clock::now();
-	auto durationInsert = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-
-
-	t1 = std::chrono::high_resolution_clock::now();
+	double insertMean = 0;
+	double insert_stddev = 0;
+	totalTime = 0;
 	for (int i = 0; i < 100; i++) {
-		hashTable.lookup(toDelete[i]);
+		totalTime += times[i];
 	}
-	t2 = std::chrono::high_resolution_clock::now();
-	auto durationLookup = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	insertMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		insert_stddev += pow(((double)times[i]) - insertMean, 2);
+	}
+	insert_stddev /= 100;
+
+
+	for (int i = 0; i < 100; i++) {
+		auto t1 = std::chrono::high_resolution_clock::now();
+		hashTable.lookup(toDelete[i]);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double lookupMean = 0;
+	double lookup_stddev = 0;
+	totalTime = 0;
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	lookupMean = ((double)totalTime) / 100.0;
+
+	for (int i = 0; i < 100; i++) {
+		lookup_stddev += pow(((double)times[i]) - lookupMean, 2);
+	}
+	lookup_stddev /= 100;
 
 	cout << "Cuckoo hashing at load factor " << loadFactor << ":" << endl;
-	cout << "Delete 100 numbers: " << durationDelete << " microseconds." << endl;
-	cout << "Insert 100 numbers: " << durationInsert << " microseconds." << endl;
-	cout << "Lookup 100 numbers: " << durationLookup << " microseconds." << endl;
+	cout << "Average delete time: " << deleteMean << " microseconds with " << delete_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average delete time: " << insertMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average delete time: " << lookupMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
 	hashTable.countRehashes();
 	cout << endl;
 }
