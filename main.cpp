@@ -86,12 +86,18 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 	//get load factor to desired value
 	int counter = 0;
 	while (hashTable.numEntries() < 2 * loadFactor * ((double)tablesize)) { //we multiply table size by 2 to account for both sides
-		cout << hashTable.numEntries() << endl;
+		if (!file.good()) {
+			cout << "Reached end of file." << endl;
+			return;
+		}
 		getline(file, tmpNum, ',');
 		num = stoi(tmpNum);
-		toDelete[counter % 100] = num; 
+		toDelete[counter % 100] = num;
 		hashTable.insert(num);
+		//cout << "Num entries: " << hashTable.numEntries() << endl;
+		//cout << "Adding " << num << endl;
 		counter++;
+		
 	}
 
 	auto t1 = std::chrono::high_resolution_clock::now();
@@ -313,11 +319,13 @@ int main(int argc, char* argv[]) {
 
 			testCuckooHashing(hashTable, tablesize, filename, 0.2);
 
+			testCuckooHashing(hashTable, tablesize, filename, 0.3);
+
+			testCuckooHashing(hashTable, tablesize, filename, 0.4);
+
 			testCuckooHashing(hashTable, tablesize, filename, 0.5);
 
-			testCuckooHashing(hashTable, tablesize, filename, 0.7);
-
-			testCuckooHashing(hashTable, tablesize, filename, 1);
+			testCuckooHashing(hashTable, tablesize, filename, 0.6);
 		}
 		else if (mainChoice == 5) {
 			cout << "Quitting..." << endl;
