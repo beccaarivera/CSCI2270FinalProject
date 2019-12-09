@@ -19,75 +19,148 @@ void mainMenu() {
 	cout << "5. Quit" << endl;
 }
 
-void hashMenu() {
-	cout << "Choose which hash function to implement:" << endl;
-	cout << "1. x mod TABLE_SIZE" << endl;
-	cout << "2. Floor(x/TABLE_SIZE) mod TABLE_SIZE" << endl;
+void actionMenu() {
+	cout << "Choose operation for hash table" << endl;
+	cout << "1. Insert new entry" << endl;
+	cout << "2. Lookup entry" << endl;
+	cout << "3. Delete entry" << endl;
+	cout << "4. Quit linked list implementation" << endl;
 }
 
-int main() {
-	// prompt user to chosse which collision resolution method to use
-	int mainChoice;
-	int hashChoice;
-
-	// read csv file
-	/*int num;
-	string tmpNum;
-	ifstream file("dataSetA.csv");
-	while (file.good()){
-		getline(file,tmpNum,',');
-		num = stoi(tmpNum);
-		cout << num << endl;
-	}*/
-
-	// declare class for linked list implementation
+int main(int argc, char* argv[]) {
+	// command line args
+	string filename = argv[1];
+	string tmpHashChoice = argv[2];
+	int hashChoice = stoi(tmpHashChoice);
+	if (hashChoice > 2 || hashChoice < 1) {
+		cout << "Please enter 1 or 2 as second argument" << endl;
+		return 0;
+	}
+	// class for linked list implementation
   hashLL ll;
+	// class for BST implementation
+  hashBST bst;
+
+	// initialize variables for user input
+  int mainChoice;
+	int actionChoice;
+	int toInsert;
+	int toLookup;
+	int toDelete;
 
 	while (true) {
+		// prompt user to choose collision resolution method
 		mainMenu();
 		cin >> mainChoice;
+
+		// chaining with linked list
 		if (mainChoice == 1) {
-			// prompt user to choose hash function to implement
-			hashMenu();
-			cin >> hashChoice;
+			// read csv file
+			int num;
+			string tmpNum;
+			ifstream file(filename);
+			if (!file.is_open())
+				cout << "failed to open file" << endl << "\n";
 
-			switch (hashChoice) {
-				// x mod TABLE_SIZE
-			case 1:
-
-				break;
-
-				// Floor(x/TABLE_SIZE) mod TABLE_SIZE
-			case 2:
-
-				break;
+			//int i = 0;
+			while (file.good()){
+				getline(file,tmpNum,',');
+				num = stoi(tmpNum);
+				// insert into hash table
+				//i++;
+				//cout << "inserting: " << i << "th element" << endl;
+				ll.insertLL(num, hashChoice);
 			}
+			cout << "done populating hash table" << endl << "\n";
 
-			// chaining with BST
+			// hash table is now populated, ask user for action
+			int quit = 0;
+			while (quit == 0) {
+				actionMenu();
+				cin >> actionChoice;
+				// insert new entry
+				if (actionChoice == 1) {
+					cout << "Enter value to insert into hash table: " << endl;
+					cout << ">> ";
+					cin >> toInsert;
+					ll.insertLL(toInsert, hashChoice);
+				}
+				// lookup entry
+				else if (actionChoice == 2) {
+					cout << "Enter value to lookup" << endl;
+					cout << ">> ";
+					cin >> toLookup;
+					ll.lookupLL(toLookup, hashChoice);
+				}
+				else if (actionChoice == 3) {
+					cout << "Enter value to delete" << endl;
+					cout << ">> ";
+					cin >> toDelete;
+					ll.deleteLL(toDelete, hashChoice);
+				}
+				else if (actionChoice == 4) {
+					quit++;
+					cout << "quitting action menu" << endl << "\n";
+				}
+			}
 		}
+
+		// chaining with BST
 		else if (mainChoice == 2) {
-			// prompt user to choose hash function to implement
-			hashMenu();
+			// read csv file
+			int num;
+			string tmpNum;
+			ifstream file(filename);
+			if (!file.is_open())
+				cout << "failed to open file" << endl << "\n";
 
-			cin >> hashChoice;
-
-			switch (hashChoice) {
-				// x mod TABLE_SIZE
-			case 1:
-
-				break;
-
-				// Floor(x/TABLE_SIZE) mod TABLE_SIZE
-			case 2:
-
-				break;
+			//int i = 0;
+			while (file.good()){
+				getline(file,tmpNum,',');
+				num = stoi(tmpNum);
+				// insert into hash table
+				//i++;
+				//cout << "inserting: " << i << "th element" << endl;
+				bst.insertBST(num, hashChoice);
 			}
+			cout << "done populating hash table" << endl << "\n";
 
-			// linear probing
+			// hash table is now populated, ask user for action
+			int quit = 0;
+			while (quit == 0) {
+				actionMenu();
+				cin >> actionChoice;
+				// insert new entry
+				if (actionChoice == 1) {
+					cout << "Enter value to insert into hash table: " << endl;
+					cout << ">> ";
+					cin >> toInsert;
+					bst.insertBST(toInsert, hashChoice);
+				}
+				// lookup entry
+				else if (actionChoice == 2) {
+					cout << "Enter value to lookup" << endl;
+					cout << ">> ";
+					cin >> toLookup;
+					bst.lookupBST(toLookup, hashChoice);
+				}
+				else if (actionChoice == 3) {
+					cout << "Enter value to delete" << endl;
+					cout << ">> ";
+					cin >> toDelete;
+					bst.deleteBST(toDelete, hashChoice);
+				}
+				else if (actionChoice == 4) {
+					quit++;
+					cout << "quitting action menu" << endl << "\n";
+				}
+			}
 		}
+
+		// linear probing
 		else if (mainChoice == 3) {
 			// prompt user to choose hash function to implement
-			hashMenu();
+			//hashMenu();
 			while (true) {
 				cin >> hashChoice;
 				if (hashChoice == 1) {
@@ -105,7 +178,7 @@ int main() {
 				}
 				else {
 					cout << "Invalid hash choice." << endl;
-					hashMenu();
+					//hashMenu();
 				}
 			}
 			// cuckoo hashing

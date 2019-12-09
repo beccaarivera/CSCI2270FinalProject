@@ -39,36 +39,45 @@ void hashBST::insertBST(int value, int choice) {
   // case for if hash location is empty
   if (isEmptyBST(key)){
     table[key]->root = node;
+    //cout << "added root" << endl;
   }
-  // if hash location already has values, traverse BST to find insert location
-  treeNode* pres = table[key]->root;
-  treeNode* parent = NULL;
-  while (pres != NULL) {
-    parent = pres;
-    // value is larger
-    if (value > pres->val)
-      pres = pres->right;
-    // value is smaller
-    else if (value < pres->val)
-      pres = pres->left;
+  else {
+    // if hash location already has values, traverse BST to find insert location
+    treeNode* pres = table[key]->root;
+    treeNode* prev = NULL;
+    while (pres != NULL) {
+      prev = pres;
+      // value is larger
+      if (value > pres->val)
+        pres = pres->right;
+      // value is smaller
+      else if (value < pres->val)
+        pres = pres->left;
+    }
+    // once at leaf node, insert new node
+    if (node->val > prev->val){
+      prev->right = node;
+      //cout << "added right child" << endl;
+    }
+    else if (node->val < prev->val){
+      prev->left = node;
+      //cout << "added left child" << endl;
+    }
   }
-  // once at leaf node, insert new node
-  if (node->val > parent->val)
-    parent->right = node;
-  else if (node->val < parent->val)
-    parent->left = node;
 }
 
 void hashBST::lookupBST(int value, int choice) {
   int key = hashCalcBST(value, choice);
   // check if tree is empty at hash location
   if (isEmptyBST(key)) {
-    cout << "Tree empty at this location, not found" << endl;
+    cout << "tree empty at this location, not found" << endl << "\n";
     return;
   }
   // check if root at hash table location matches value
-  if (table[key]->root->val == value)
-    cout << "found!" << endl;
+  if (table[key]->root->val == value) {
+    cout << "found!" << endl << "\n";
+    return;
+  }
   else {
     // traverse tree
     treeNode* pres = table[key]->root;
@@ -81,13 +90,13 @@ void hashBST::lookupBST(int value, int choice) {
         pres = pres->left;
       // if reached leaf node
       else if (pres->right == NULL && pres->left == NULL){
-        cout << "not found" << endl;
+        cout << "not found" << endl << "\n";
         return;
       }
     }
   }
   // assume node found
-  cout << "found!" << endl;
+  cout << "found!" << endl << "\n";
 }
 
 treeNode* getMinValueNode(treeNode* pres) {
@@ -137,7 +146,7 @@ void hashBST::deleteBST(int value, int choice) {
   int key = hashCalcBST(value, choice);
   // check if tree is empty at hash location
   if (isEmptyBST(key)) {
-    cout << "tree empty at this location, cannot delete" << endl;
+    cout << "tree empty at this location, cannot delete" << endl << "\n";
     return;
   }
   // traverse tree to find node to delete
@@ -150,7 +159,7 @@ void hashBST::deleteBST(int value, int choice) {
     else if (value < pres->val && pres->left != NULL)
       pres = pres->left;
     else if (pres->right == NULL && pres->left == NULL) {
-      cout << "not found, cannot delete" << endl;
+      cout << "not found, cannot delete" << endl << "\n";
       return;
     }
   }
