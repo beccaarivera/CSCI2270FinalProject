@@ -348,8 +348,6 @@ int main(int argc, char* argv[]) {
 
 		// linear probing
 		else if (mainChoice == 3) {
-			// prompt user to choose hash function to implement
-
 			int tablesize = 10009;
 			while (true) {
 				if (hashChoice == 1) {
@@ -419,29 +417,3 @@ int main(int argc, char* argv[]) {
 		}
 	}
 }
-
-
-
-
-//cuckoo hashing test
-/*
-			int tablesize = 5;
-			//fill up the table
-			for (int i = 0; i < tablesize; i++) {
-				hashTable.insert(i);
-				hashTable.insert(i * tablesize + i);
-			}
-
-			//cause rehash
-			hashTable.insert(tablesize*tablesize+tablesize);
-			hashTable.countRehashes();
-
-			hashTable.printValues();
-
-			cout << "Deleting all values except " << tablesize*tablesize+tablesize << endl;
-			for (int i = 0; i < tablesize; i++) {
-				hashTable.deleteValue(i);
-				hashTable.deleteValue(i * tablesize + i);
-			}
-			hashTable.printValues();
-			hashTable.lookup(tablesize * tablesize + tablesize);*/

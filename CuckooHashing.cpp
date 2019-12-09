@@ -3,13 +3,15 @@
 #include <math.h>
 using namespace std;
 
-//checks if an odd number is prime
+//checks if a number is prime (used in rehashing to find new table size)
 bool isPrime(int N) {
+	//check if N is even
 	if (N % 2 == 0) {
 		return false;
 	}
 
-	//now check if i is divisible by every odd number
+	//now check if i is divisible by any odd number less than half of it 
+	//since N will never be divisible by 2 once we get here, we don't need to check N/2
 	for (int i = 3; i < ((double)N) / 2; i += 2) {
 		if (N % i == 0) {
 			return false;
@@ -18,9 +20,10 @@ bool isPrime(int N) {
 	return true;
 }
 
+//constructor initializes all the necessary components of the cuckoo hash table
 CuckooHashing::CuckooHashing(int tablesize) {
 	TABLE_SIZE = tablesize;
-	TABLE_SIZE_INCREMENT = (int)(((double)TABLE_SIZE) * 0.1);
+	TABLE_SIZE_INCREMENT = (int)(((double)TABLE_SIZE) * 0.1); //arbitrary number, other values may make performance better or worse
 	rehashCounter = 0;
 	hashTable1 = new CuckooBin * [TABLE_SIZE];
 	hashTable2 = new CuckooBin * [TABLE_SIZE];
@@ -29,6 +32,8 @@ CuckooHashing::CuckooHashing(int tablesize) {
 		hashTable2[i] = NULL;
 	}
 }
+
+//counts the number of entries in the tables
 int CuckooHashing::numEntries() {
 	int toReturn = 0;
 	for (int i = 0; i < TABLE_SIZE; i++) {
@@ -42,6 +47,7 @@ int CuckooHashing::numEntries() {
 	return toReturn;
 }
 
+//clears the tables of data without deleting them entirely (useful for debugging)
 void CuckooHashing::clearTables() {
 	for (int i = 0; i < TABLE_SIZE; i++) {
 		if (hashTable1[i] != NULL) {
@@ -56,7 +62,7 @@ void CuckooHashing::clearTables() {
 }
 
 CuckooHashing::~CuckooHashing() {
-	deleteTables();
+	deleteTables(); //tables are the only dynamically allocated memory so we only need to delete them
 }
 
 int CuckooHashing::hashFunc1(int toHash) {
@@ -70,70 +76,68 @@ int CuckooHashing::hashFunc2(int toHash) {
 //insertHelper is here so that rehashing won't call itself if the new table size doesn't work
 //returns false if we need to rehash
 bool CuckooHashing::insertHelper(int toInsert) {
+
+	//get the two addresses it could be at
 	int address1 = hashFunc1(toInsert);
 	int address2 = hashFunc2(toInsert);
 
 
 	//cannot insert existing number
 	if (hashTable1[address1] != NULL && hashTable1[address1]->value == toInsert) {
-		//cout << "Cannot insert duplicate value" << endl;
 		return true;
 	}
 	if (hashTable2[address2] != NULL && hashTable2[address2]->value == toInsert) {
-		//cout << "Cannot insert duplicate value" << endl;
 		return true;
 	}
 
 	if (hashTable1[address1] == NULL) {
 		//we can put the value into the first hash table without collision
 		hashTable1[address1] = new CuckooBin(toInsert, false);
-		//cout << toInsert << " inserted at " << address1 << " in table 1" << "(address " << hashTable1[address1] << ")" << endl;
 	}
 	else if (hashTable2[address2] == NULL) {
 		//we can put the value into the second hash table without collision
 		hashTable2[address2] = new CuckooBin(toInsert, false);
-		//cout << toInsert << " inserted at " << address2 << " in table 2" << endl;
 	}
 	else if (swap(address1, 1)) {
 		//we can move the number at the first address without rehashing
 		hashTable1[address1] = new CuckooBin(toInsert, false);
-		//cout << toInsert << " inserted at " << address1 << " in table 1 after swapping the previous occupant" << endl;
 	}
 	else if (swap(address2, 2)) {
 		//we can move the number at the second address without rehashing
 		hashTable2[address2] = new CuckooBin(toInsert, false);
-		//cout << toInsert << " inserted at " << address2 << " in table 2 after swapping the previous occupant" << endl;
 	}
 	else {
 		//rehash :(
-		//cout << "Failed inserting " << toInsert << ", rehashing..." << endl;
 		return false;
 	}
 	return true;
 }
 
+//wrapper for insertHelper, calls rehash if insert fails with current tables
 void CuckooHashing::insert(int toInsert) {
 
 	if (!insertHelper(toInsert)) {
+		//if the insert fails, we need to rehash
 		rehash(toInsert);
 	}
 }
 
+//prints out how many rehashes have ocurred
 void CuckooHashing::countRehashes() {
 	cout << "Cuckoo hash table has rehashed " << rehashCounter << " times." << endl;
 }
 
+//deletes a value from the tables
 void CuckooHashing::deleteValue(int toDelete) {
 	//value will be at one of two locations
 	int address1 = hashFunc1(toDelete);
 	int address2 = hashFunc2(toDelete);
+
 	if (hashTable1[address1] != NULL && hashTable1[address1]->value == toDelete) {
-		//cout << "Deleting " << toDelete << " from " << address1 << " in table 1." << endl;
 		delete hashTable1[address1];
 		hashTable1[address1] = NULL;
 	}
 	else if (hashTable2[address2] != NULL && hashTable2[address2]->value == toDelete) {
-		//cout << "Deleting " << toDelete << " from " << address2 << " in table 2." << endl;
 		delete hashTable2[address2];
 		hashTable2[address2] = NULL;
 	}
@@ -142,16 +146,18 @@ void CuckooHashing::deleteValue(int toDelete) {
 	}
 }
 
+//looks up a value and returns true if found, false otherwise
 bool CuckooHashing::lookup(int toLookup) {
 	//value will be at one of two locations
 	int address1 = hashFunc1(toLookup);
 	int address2 = hashFunc2(toLookup);
+
 	if (hashTable1[address1] != NULL && hashTable1[address1]->value == toLookup) {
-		//std::cout << "Value found at index " << address1 << " in hash table 1." << std::endl;
+		//we found it
 		return true;
 	}
 	else if (hashTable2[address2] != NULL && hashTable2[address2]->value == toLookup) {
-		//std::cout << "Value found at index " << address2 << " in hash table 2." << std::endl;
+		//we found it
 		return true;
 	}
 	else {
@@ -160,28 +166,33 @@ bool CuckooHashing::lookup(int toLookup) {
 	}
 }
 
+//resizes the tables to new sizes after a value that cannot fit is inserted
 void CuckooHashing::rehash(int toInsert) {
+
+	//copy current tables over to variables while they are resized
 	CuckooBin** hashTable1Old = hashTable1;
 	CuckooBin** hashTable2Old = hashTable2;
 	int originalSize = TABLE_SIZE;
+	
 	bool toContinue;
 
 	while (true) {
 		toContinue = false;
 
-		//increment table size by 2 (since evens aren't prime) until we reach another prime
+		//find new table size
 		TABLE_SIZE += TABLE_SIZE_INCREMENT;
-
 		if (TABLE_SIZE % 2 == 0) {
 			TABLE_SIZE++;
 		}
+		//increment table size by 2 (since evens aren't prime) until we reach another prime
 		while (!isPrime(TABLE_SIZE)) {
 			TABLE_SIZE += 2;
 		}
-		//cout << "Rehashing to size " << TABLE_SIZE << endl;
 
+		//increment the rehash counter since we are trying to rehash
 		rehashCounter++;
 
+		//create new tables and initialize them empty
 		hashTable1 = new CuckooBin * [TABLE_SIZE];
 		hashTable2 = new CuckooBin * [TABLE_SIZE];
 		for (int i = 0; i < TABLE_SIZE; i++) {
@@ -192,6 +203,7 @@ void CuckooHashing::rehash(int toInsert) {
 		//insert new value
 		insertHelper(toInsert);
 
+		//try to insert all the values from the old array to the new one. if it won't work, we increase the size again
 		for (int i = 0; i < originalSize; i++) {
 			if (hashTable1Old[i] != NULL) {
 				if (!(insertHelper(hashTable1Old[i]->value))) {
@@ -214,11 +226,13 @@ void CuckooHashing::rehash(int toInsert) {
 		}
 		break;
 	}
-
-	delete hashTable1Old;
-	delete hashTable2Old;
+	
+	//everything is copied over so we can delete the old tables
+	delete[] hashTable1Old;
+	delete[] hashTable2Old;
 }
 
+//main function for swapping, begins recursive swapHelper call and then calls markAllUnvisited before returning the swapHelper return value
 bool CuckooHashing::swap(int toSwapKey, int tableNum) {
 	bool toReturn = swapHelper(toSwapKey, tableNum);
 	markAllUnvisited();
@@ -226,14 +240,13 @@ bool CuckooHashing::swap(int toSwapKey, int tableNum) {
 }
 
 //recursively swaps toSwapKey to its alternate slot, and if that one is full to its alternate, etc.
-//originalKey will remain the same throughout the recursive callstack because we use it to identify infinite loops
+//we use visited to identify infinite loops
 bool CuckooHashing::swapHelper(int toSwapKey, int tableNum) {
-	//cout << "Swapping with original key " << originalKey << ", original table " << originalTable << ", to swap key " << toSwapKey << ", and table num " << tableNum << endl;
-	//cout << "Swapping " << toSwapKey << " in table " << tableNum;
 	if (tableNum == 1) {
-		hashTable1[toSwapKey]->visited = true;
-		int toSwapToKey = hashFunc2(hashTable1[toSwapKey]->value);
-		//cout << " to " << toSwapToKey << " in table 2" << endl;
+		hashTable1[toSwapKey]->visited = true; //mark the current value as visited
+
+		int toSwapToKey = hashFunc2(hashTable1[toSwapKey]->value);//location we are going to swap to in table 2
+
 		if (hashTable2[toSwapToKey] == NULL) {
 			//swap
 			hashTable2[toSwapToKey] = hashTable1[toSwapKey];
@@ -245,20 +258,23 @@ bool CuckooHashing::swapHelper(int toSwapKey, int tableNum) {
 		}
 		else {
 			//recurse
-			//cout << "swap recursing" << endl;
 			if (swapHelper(toSwapToKey, 2)) {
-				hashTable2[toSwapToKey] = hashTable1[toSwapKey];
+				//if the recursive swapHelper call returns true we can swap now
+				hashTable2[toSwapToKey] = hashTable1[toSwapKey]; 
 				return true;
 			}
 			else {
+				//otherwise we cannot swap
 				return false;
 			}
 		}
 	}
 	else {
-		hashTable2[toSwapKey]->visited = true;
-		int toSwapToKey = hashFunc1(hashTable2[toSwapKey]->value);
-		//cout << " to " << toSwapToKey << " in table 1" << endl;
+		//set this bucket to visited
+		hashTable2[toSwapKey]->visited = true; //mark the current value as visited
+
+		int toSwapToKey = hashFunc1(hashTable2[toSwapKey]->value);//location we are going to swap to in table 2
+
 		if (hashTable1[toSwapToKey] == NULL) {
 			//swap
 			hashTable1[toSwapToKey] = hashTable2[toSwapKey];
@@ -266,23 +282,24 @@ bool CuckooHashing::swapHelper(int toSwapKey, int tableNum) {
 		}
 		else if (hashTable1[toSwapToKey]->visited == true) {
 			//rehash
-			//cout << "Infinite loop found at " << toSwapToKey << "in table 1" << endl;
 			return false;
 		}
 		else {
 			//recurse
-			//cout << "swap recursing" << endl;
 			if (swapHelper(toSwapToKey, 1)) {
+				//if the recursive swapHelper call returns true we can swap now
 				hashTable1[toSwapToKey] = hashTable2[toSwapKey];
 				return true;
 			}
 			else {
+				//otherwise we cannot swap
 				return false;
 			}
 		}
 	}
 }
 
+//marks all values in both tables unvisited (called by swap after swapHelper to reset state of all values)
 void CuckooHashing::markAllUnvisited() {
 	for (int i = 0; i < TABLE_SIZE; i++) {
 		if (hashTable1[i] != NULL) {
@@ -294,6 +311,7 @@ void CuckooHashing::markAllUnvisited() {
 	}
 }
 
+//prints all values in the tables (useful for debugging)
 void CuckooHashing::printValues() {
 	cout << "Printing values..." << endl;
 	for (int i = 0; i < TABLE_SIZE; i++) {
@@ -315,6 +333,8 @@ void CuckooHashing::printValues() {
 	cout << "Done" << endl;
 }
 
+//deletes all values in both tables, then deletes the tables themselves. 
+//called by destructor and rehash function
 void CuckooHashing::deleteTables() {
 	for (int i = 0; i < TABLE_SIZE; i++) {
 		if (hashTable1[i] != NULL) {

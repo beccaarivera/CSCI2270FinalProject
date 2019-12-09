@@ -1,15 +1,15 @@
 #pragma once
-#include <string>
 class LinearProbing
 {
 public:
 	void insert(int toInsert);
 	void deleteValue(int toDelete);
-	void lookup(int toLookup);
+	bool lookup(int toLookup);
 	double loadFactor();
 	LinearProbing(int hashFunction, int tablesize);
 	~LinearProbing();
 	void clearTable();
+
 private:
 	int TABLE_SIZE;
 	int hashFunc;
