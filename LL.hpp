@@ -12,7 +12,7 @@ struct LLnode {
 
   //int key; // index location in hash table
   int val; // value
-  struct LLnode* next;
+  LLnode* next = NULL;
 };
 
 // node structure for hash table

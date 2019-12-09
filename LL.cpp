@@ -59,12 +59,12 @@ void hashLL::lookupLL(int value, int choice) {
   int key = hashCalcLL(value, choice);
   // check if linked list is empty at hash location
   if (isEmptyLL(key)) {
-    cout << "Linked List empty at this location, not found" << endl;
+    cout << "linked list empty at this location, not found" << endl << "\n";
     return;
   }
   // case for if searched value is head
   if (table[key]->head->val == value) {
-    cout << "found!" << endl;
+    cout << "found!" << endl << "\n";
     return;
   }
   else {
@@ -74,19 +74,20 @@ void hashLL::lookupLL(int value, int choice) {
     while (pres->next != NULL) {
       prev = pres;
       pres = pres->next;
-      if (pres->val == value)
-        cout << "found!" << endl;
+      if (pres->val == value) {
+        cout << "found!" << endl << "\n";
         return;
+      }
     }
   }
-  cout << "not found :(" << endl;
+  cout << "not found" << endl << "\n";
 }
 
 void hashLL::deleteLL(int value, int choice) {
   int key = hashCalcLL(value, choice);
   // check if linked list is empty at hash location
   if (isEmptyLL(key)) {
-    cout << "Linked List empty at this location, cannot delete" << endl;
+    cout << "linked List empty at this location, cannot delete" << endl << "\n";
     return;
   }
   // case to delete head
@@ -103,12 +104,13 @@ void hashLL::deleteLL(int value, int choice) {
     while (pres->next != NULL) {
       prev = pres;
       pres = pres->next;
-      if (pres->val == value)
+      if (pres->val == value) {
         prev->next = pres->next;
+        cout << "deleting " << pres->val << endl << "\n";
         delete pres;
-        cout << "deleted" << endl;
         return;
+      }
     }
   }
-  cout << "not found" << endl;
+  cout << "not found" << endl << "\n";
 }
