@@ -76,9 +76,11 @@ bool CuckooHashing::insertHelper(int toInsert) {
 
 	//cannot insert existing number
 	if (hashTable1[address1] != NULL && hashTable1[address1]->value == toInsert) {
+		//cout << "Cannot insert duplicate value" << endl;
 		return true;
 	}
 	if (hashTable2[address2] != NULL && hashTable2[address2]->value == toInsert) {
+		//cout << "Cannot insert duplicate value" << endl;
 		return true;
 	}
 
