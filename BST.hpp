@@ -23,15 +23,16 @@ public:
 	int hashCalcBST(int value);
 	bool isEmptyBST(int key);
 	void insertBST(int value);
-	treeNode* insertBSTHelper( treeNode* currNode, int data);
 	bool lookupBST(int value);
-	bool lookupBSTHelper(int value, treeNode* root);
-	treeNode* deleteBSTHelper(treeNode* pres, int value);
 	void deleteBST(int value);
 	//void deleteBST(int value, int choice);
 	//treeNode* deleteHelper(treeNode* pres);
 	treeNode* getMinValueNode(treeNode* pres);
+	void clearTable();
 private:
+	bool lookupBSTHelper(int value, treeNode* root);
+	treeNode* insertBSTHelper(treeNode* currNode, int data);
+	treeNode* deleteBSTHelper(treeNode* pres, int value);
 	int TABLE_SIZE = 10009;
 	int choice;
 };

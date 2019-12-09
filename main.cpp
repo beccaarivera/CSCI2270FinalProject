@@ -234,6 +234,105 @@ void testCuckooHashing(CuckooHashing& hashTable, int tablesize, string filename,
 	cout << endl;
 }
 
+
+//tests linear probing hash table with given hash table, tablesize, filename of data, and at the given load factor
+void testBST(hashBST& hashTable, int tablesize, string filename, double loadFactor) {
+	int num;
+	string tmpNum;
+	ifstream file(filename);
+
+	int toDelete[100];
+	int times[100];
+
+	int counter = 0;
+	while (counter <  ceil(((double) tablesize)*((double)loadFactor))) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[counter % 100] = num;
+		hashTable.insertBST(num);
+		counter++;
+	}
+	cout << counter << " numbers inserted to bring load factor to " << loadFactor << endl;
+
+	//delete 100 values and record the time each takes
+	for (int i = 0; i < 100; i++) {
+		auto t1 = std::chrono::high_resolution_clock::now();
+		hashTable.deleteBST(toDelete[i]);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double deleteMean = 0;
+	double delete_stddev = 0;
+	int totalTime = 0;
+
+	//calculate mean
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	deleteMean = ((double)totalTime) / 100.0;
+
+	//calculate std dev
+	for (int i = 0; i < 100; i++) {
+		delete_stddev += pow(((double)times[i]) - deleteMean,2);
+	}
+	delete_stddev /= 99;
+
+	//insert 100 values and record the time each takes
+	for (int i = 0; i < 100; i++) {
+		getline(file, tmpNum, ',');
+		num = stoi(tmpNum);
+		toDelete[i] = num;
+		auto t1 = std::chrono::high_resolution_clock::now();
+		hashTable.insertBST(num);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double insertMean = 0;
+	double insert_stddev = 0;
+	totalTime = 0;
+	
+	//calculate mean
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	insertMean = ((double)totalTime) / 100.0;
+
+	//calculate std dev
+	for (int i = 0; i < 100; i++) {
+		insert_stddev += pow(((double)times[i]) - deleteMean, 2);
+	}
+	insert_stddev /= 99;
+
+	//lookup 100 values and record the time each takes
+	for (int i = 0; i < 100; i++) {
+		auto t1 = std::chrono::high_resolution_clock::now();
+		hashTable.lookupBST(toDelete[i]);
+		auto t2 = std::chrono::high_resolution_clock::now();
+		times[i] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	double lookupMean = 0;
+	double lookup_stddev = 0;
+	totalTime = 0;
+
+	//calculate mean
+	for (int i = 0; i < 100; i++) {
+		totalTime += times[i];
+	}
+	lookupMean = ((double)totalTime) / 100.0;
+
+	//calculate std dev
+	for (int i = 0; i < 100; i++) {
+		lookup_stddev += pow(((double)times[i]) - deleteMean, 2);
+	}
+	lookup_stddev /= 99;
+
+	cout << "BST chaining at load factor " << loadFactor << ":" << endl;
+	cout << "Average delete time: " << deleteMean << " microseconds with " << delete_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average insert time: " << insertMean << " microseconds with " << insert_stddev << " microseconds standard deviation ." << endl;
+	cout << "Average lookup time: " << lookupMean << " microseconds with " << lookup_stddev << " microseconds standard deviation ." << endl;
+	cout << endl;
+}
+
 int main(int argc, char* argv[]) {
 	// command line args
 	string filename = argv[1];
@@ -314,62 +413,24 @@ int main(int argc, char* argv[]) {
 
 		// chaining with BST
 		else if (mainChoice == 2) {
-			// read csv file
-			int num;
-			string tmpNum;
-			ifstream file(filename);
-			if (!file.is_open())
-				cout << "failed to open file" << endl << "\n";
+			int tablesize = 10009;
+			hashBST hashTable(hashChoice);
+			testBST(hashTable, tablesize, filename, 0.1);
+			hashTable.clearTable();
 
-			//int i = 0;
-			/*while (file.good()) {
-				getline(file, tmpNum, ',');
-				num = stoi(tmpNum);
-				// insert into hash table
-				//i++;
-				//cout << "inserting: " << i << "th element" << endl;
-				bst.insertBST(num);
-			}*/
-			cout << "done populating hash table" << endl << "\n";
+			testBST(hashTable, tablesize, filename, 0.2);
+			hashTable.clearTable();
 
-			// hash table is now populated, ask user for action
-			int quit = 0;
-			while (quit == 0) {
-				actionMenu();
-				cin >> actionChoice;
-				// insert new entry
-				if (actionChoice == 1) {
-					cout << "Enter value to insert into hash table: " << endl;
-					cout << ">> ";
-					cin >> toInsert;
-					bst.insertBST(toInsert);
-				}
-				// lookup entry
-				else if (actionChoice == 2) {
-					cout << "Enter value to lookup" << endl;
-					cout << ">> ";
-					cin >> toLookup;
-					if (bst.lookupBST(toLookup)) {
-						cout << endl <<"lookup successful!" << endl;
-					}
-					else {
-						cout << "lookup failure :(" << endl;
-					}
-				}
-				// delete entry
-				else if (actionChoice == 3) {
-					cout << "Enter value to delete" << endl;
-					cout << ">> ";
-					cin >> toDelete;
-					int hashKey = bst.hashCalcBST(toDelete);
-					cout << "value of node input into delete function" << bst.table[hashKey]->root->val << endl;
-					bst.deleteBST(toDelete);
-				}
-				else if (actionChoice == 4) {
-					quit++;
-					cout << "quitting action menu" << endl << "\n";
-				}
-			}
+			testBST(hashTable, tablesize, filename, 0.5);
+			hashTable.clearTable();
+
+			testBST(hashTable, tablesize, filename, 0.7);
+			hashTable.clearTable();
+
+			testBST(hashTable, tablesize, filename, 1);
+
+			break;
+			
 		}
 
 		// linear probing
@@ -443,3 +504,60 @@ int main(int argc, char* argv[]) {
 		}
 	}
 }
+
+/*
+int num;
+			string tmpNum;
+			ifstream file(filename);
+			if (!file.is_open())
+				cout << "failed to open file" << endl << "\n";
+
+			//int i = 0;
+			while (file.good()) {
+				getline(file, tmpNum, ',');
+				num = stoi(tmpNum);
+				// insert into hash table
+				//i++;
+				//cout << "inserting: " << i << "th element" << endl;
+				bst.insertBST(num);
+			}
+			cout << "done populating hash table" << endl << "\n";
+
+			// hash table is now populated, ask user for action
+			int quit = 0;
+			while (quit == 0) {
+				actionMenu();
+				cin >> actionChoice;
+				// insert new entry
+				if (actionChoice == 1) {
+					cout << "Enter value to insert into hash table: " << endl;
+					cout << ">> ";
+					cin >> toInsert;
+					bst.insertBST(toInsert);
+				}
+				// lookup entry
+				else if (actionChoice == 2) {
+					cout << "Enter value to lookup" << endl;
+					cout << ">> ";
+					cin >> toLookup;
+					if (bst.lookupBST(toLookup)) {
+						cout << endl <<"lookup successful!" << endl;
+					}
+					else {
+						cout << "lookup failure :(" << endl;
+					}
+				}
+				// delete entry
+				else if (actionChoice == 3) {
+					cout << "Enter value to delete" << endl;
+					cout << ">> ";
+					cin >> toDelete;
+					int hashKey = bst.hashCalcBST(toDelete);
+					cout << "value of node input into delete function" << bst.table[hashKey]->root->val << endl;
+					bst.deleteBST(toDelete);
+				}
+				else if (actionChoice == 4) {
+					quit++;
+					cout << "quitting action menu" << endl << "\n";
+				}
+			}*/
