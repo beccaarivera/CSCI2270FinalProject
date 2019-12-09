@@ -328,6 +328,7 @@ int main(int argc, char* argv[]) {
 					cin >> toLookup;
 					int hashKey = bst.hashCalcBST(toLookup, hashChoice);
 					bst.lookupBST(toLookup, hashKey);
+					bst.lookupBST(toLookup, hashKey);
 				}
 				// delete entry
 				else if (actionChoice == 3) {

@@ -110,9 +110,9 @@ void LinearProbing::lookup(int toLookup) {
 	key = (key + 1 % TABLE_SIZE);
 
 	//if we reach the original location, the value will not be found
-	while (key!=originalKey) {
+	while (key != originalKey) {
 		//print and return if found
-		if (hashTable[key]!=NULL && *hashTable[key] == toLookup) {
+		if (hashTable[key] != NULL && *hashTable[key] == toLookup) {
 			//cout << "Value " << toLookup << " found at key " << key << endl;
 			return;
 		}
@@ -128,7 +128,7 @@ int LinearProbing::hashFunc1(int toHash) {
 }
 
 int LinearProbing::hashFunc2(int toHash) {
-	return ((int) floor(toHash / TABLE_SIZE)) % TABLE_SIZE;
+	return ((int)floor(toHash / TABLE_SIZE)) % TABLE_SIZE;
 }
 
 double LinearProbing::loadFactor() {

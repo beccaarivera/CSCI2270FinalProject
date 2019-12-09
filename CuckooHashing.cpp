@@ -20,7 +20,7 @@ bool isPrime(int N) {
 
 CuckooHashing::CuckooHashing(int tablesize) {
 	TABLE_SIZE = tablesize;
-	TABLE_SIZE_INCREMENT =(int) (((double) TABLE_SIZE)*0.1);
+	TABLE_SIZE_INCREMENT = (int)(((double)TABLE_SIZE) * 0.1);
 	rehashCounter = 0;
 	hashTable1 = new CuckooBin * [TABLE_SIZE];
 	hashTable2 = new CuckooBin * [TABLE_SIZE];
@@ -170,8 +170,8 @@ void CuckooHashing::rehash(int toInsert) {
 		toContinue = false;
 
 		//increment table size by 2 (since evens aren't prime) until we reach another prime
-		TABLE_SIZE+=TABLE_SIZE_INCREMENT;
-		
+		TABLE_SIZE += TABLE_SIZE_INCREMENT;
+
 		if (TABLE_SIZE % 2 == 0) {
 			TABLE_SIZE++;
 		}
